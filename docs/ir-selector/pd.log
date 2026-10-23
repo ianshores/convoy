@@ -1,0 +1,7 @@
+g++ -O3 -std=c++17 -Wall -Wextra -shared -fPIC -Iinclude -I"/home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/src" pd/heavyverb_tilde.cpp -o 'build/heavyverb~.pd_linux'
+pd/heavyverb_tilde.cpp: In function ‘void heavyverb_tilde_setup()’:
+pd/heavyverb_tilde.cpp:58:45: warning: cast between incompatible function types from ‘void* (*)(t_symbol*, t_floatarg, t_floatarg)’ {aka ‘void* (*)(_symbol*, float, float)’} to ‘t_newmethod’ {aka ‘void* (*)()’} [-Wcast-function-type]
+   58 |     klass = class_new(gensym("heavyverb~"), reinterpret_cast<t_newmethod>(create),
+      |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PASS: native Pd external rendered matching full response; error 2.24e-08
+PASS: native Pd external rendered matching cutoff response; error 2.24e-08

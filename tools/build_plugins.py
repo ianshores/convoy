@@ -17,8 +17,15 @@ dpf = args.dpf.resolve()
 revision = subprocess.check_output(["git", "-C", str(dpf), "rev-parse", "HEAD"], text=True).strip()
 if revision != DPF_REVISION:
     parser.error(f"tested DPF revision is {DPF_REVISION}; got {revision}")
+if args.patch.resolve() == ROOT / "examples/effect.pd":
+    if subprocess.run(["pkg-config", "--exists", "sndfile", "samplerate"]).returncode:
+        parser.error("WAV selector needs the libsndfile and libsamplerate development packages")
 output = args.output.resolve()
 subprocess.run([sys.executable, str(ROOT / "tools/export.py"), str(args.patch), str(output), "--generators", "c", "dpf", "wwise"], check=True)
+# The supplied effect graph has explicit left/right IR channels and this host.
+if args.patch.resolve() == ROOT / "examples/effect.pd":
+    from add_wav_selector import configure
+    configure(output)
 link = output / "dpf"
 if link.exists() or link.is_symlink():
     if link.resolve() != dpf: parser.error("output/dpf already points to a different checkout")

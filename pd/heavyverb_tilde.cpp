@@ -41,7 +41,10 @@ static void dsp(Object* x, t_signal** s) {
     dsp_add(perform, 4, x, s[0]->s_vec, s[1]->s_vec, s[0]->s_n);
 }
 static void destroy(Object* x) { delete x->engine; }
-static void* create(t_symbol* table, t_floatarg partition) {
+static void* create(t_symbol* table, t_floatarg partition, t_floatarg channel) {
+    if (!std::isfinite(channel) || channel < 0 || channel > 1 || std::floor(channel) != channel) {
+        pd_error(nullptr, "heavyverb~: channel must be 0 or 1"); return nullptr;
+    }
     if (!std::isfinite(partition) || partition < 0 || partition > 8192 || std::floor(partition) != partition) {
         pd_error(nullptr, "heavyverb~: invalid partition argument"); return nullptr;
     }
@@ -53,7 +56,7 @@ static void* create(t_symbol* table, t_floatarg partition) {
 }
 extern "C" void heavyverb_tilde_setup() {
     klass = class_new(gensym("heavyverb~"), reinterpret_cast<t_newmethod>(create),
-        reinterpret_cast<t_method>(destroy), sizeof(Object), CLASS_DEFAULT, A_DEFSYM, A_DEFFLOAT, 0);
+        reinterpret_cast<t_method>(destroy), sizeof(Object), CLASS_DEFAULT, A_DEFSYM, A_DEFFLOAT, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(klass, Object, signal);
     class_addmethod(klass, reinterpret_cast<t_method>(dsp), gensym("dsp"), A_CANT, 0);
 }

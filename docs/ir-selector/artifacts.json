@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-23",
+  "machine": "Odysseus, Intel Core Ultra 9 185H, Linux x86_64",
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "hvcc": "0.17.2",
+  "DPF": "4238e1c7f0351bbe488d79f0899c540543ac7583",
+  "libsndfile": "1.2.2",
+  "libsamplerate": "0.2.2",
+  "artifacts": {
+    "build/effect-selector/bin/HeavyVerbDemo.vst3/Contents/x86_64-linux/HeavyVerbDemo.so": {
+      "bytes": 1518144,
+      "sha256": "79b2def43276dff3ddc9f9a7d8ecd7392dd1f5a3ce5fb336fb8624dbc31e2a4e"
+    },
+    "build/effect-selector/bin/HeavyVerbDemo.clap": {
+      "bytes": 1464928,
+      "sha256": "50885214e782b8a6f320c1a69ce0c60b170cedc3b0dfded879533a9ef44825f9"
+    }
+  }
+}

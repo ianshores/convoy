@@ -31,7 +31,8 @@ def register():
         "ir": {"control": True, "signal": True, "init": True},
         "args": [
             {"name": "table", "value_type": "string", "default": "", "required": True},
-            {"name": "partition", "value_type": "int", "default": 256, "required": False}],
+            {"name": "partition", "value_type": "int", "default": 256, "required": False},
+            {"name": "channel", "value_type": "int", "default": 0, "required": False}],
         "perf": {"avx": 0, "sse": 0}})
     PdHeavyObject._HeavyObject__HEAVY_IR_OBJS[TYPE] = definition
     HeavyIrObject._HeavyIrObject__HEAVY_OBJS_IR_DICT[TYPE] = definition
@@ -43,6 +44,9 @@ def register():
         def reduce(self):
             table = self.graph.resolve_object_for_name(self.args["table"], ["table", "__table"])
             b = self.args["partition"]
+            if self.args["channel"] not in (0, 1):
+                self.add_error("heavyverb~ channel must be 0 or 1")
+                return ({self}, [])
             if b < 16 or b > 8192 or b & (b - 1):
                 self.add_error("heavyverb~ partition must be a power of two from 16 to 8192")
                 return ({self}, [])
@@ -61,13 +65,13 @@ def register():
 
         @classmethod
         def get_C_header_set(cls):
-            return {"heavyverb.hpp"}
+            return {"heavyverb_ir_override.hpp"}
 
         @classmethod
         def get_C_init(cls, obj_type, obj_id, args):
             values = ", ".join(float(v).hex() + "f" for v in args["coefficients"])
             return [f"([&]() -> hv_size_t {{ static const float ir[] = {{{values}}}; "
-                    f"hvVerb_{obj_id}.reset(new heavyverb::Convolver(ir, {len(args['coefficients'])}, {args['partition']})); return static_cast<hv_size_t>(hvVerb_{obj_id}->memory_bytes()); }})();"]
+                    f"hvVerb_{obj_id}.reset(heavyverb::make_convolver(ir, {len(args['coefficients'])}, {args['partition']}, {args['channel']})); return static_cast<hv_size_t>(hvVerb_{obj_id}->memory_bytes()); }})();"]
 
         @classmethod
         def get_C_free(cls, obj_type, obj_id, args):
@@ -131,8 +135,11 @@ def main():
     for path in args.output.rglob("*"):
         if path.is_file() and path.name in obsolete:
             path.unlink()
+    # Remove our optional demo host before generating a fresh generic wrapper.
+    for name in ("HeavyVerbPlugin.cpp", "HeavyVerbUI.cpp", "graph_runtime.hpp", "wav_loader.hpp"):
+        (args.output / "plugin/source" / name).unlink(missing_ok=True)
     meta = args.output / "metadata.json"
-    meta.write_text(json.dumps({"nosimd": True, "dpf": {"plugin_formats": ["clap", "vst3"], "plugin_uri": "https://github.com/ianshores/heavyverb", "plugin_clap_id": "org.heavyverb.demo"}}))
+    meta.write_text(json.dumps({"nosimd": True, "dpf": {"maker": "Ian Shores", "license": "MIT (heavyverb); see component notices", "homepage": "https://github.com/ianshores/heavyverb", "plugin_formats": ["clap", "vst3"], "plugin_uri": "https://github.com/ianshores/heavyverb", "plugin_clap_id": "org.heavyverb.demo"}}))
     results = compile_dataflow(in_path=args.patch.resolve(), out_dir=args.output.resolve(),
         patch_name=args.name, patch_meta_file=meta.resolve(),
         search_paths=[ROOT / "pd/export", *args.search_path], generators=args.generators)
@@ -147,6 +154,10 @@ def main():
                 print(f"ERROR {result.stage}: {error.message}", file=sys.stderr)
             if result.notifs.exception:
                 print(result.notifs.exception, file=sys.stderr)
+    if not failed:
+        from patch_heavy_runtime import patch_light_pipe
+        for pipe in args.output.rglob("HvLightPipe.c"):
+            patch_light_pipe(pipe)
     makefile = args.output / "plugin/source/Makefile"
     if "dpf" in args.generators and not failed and makefile.exists():
         with makefile.open("a") as stream:

@@ -1,10 +1,10 @@
 #N canvas 0 0 700 500 10;
 #X obj 30 40 adc~ 1 2;
 #X obj 30 90 *~ 1;
-#X obj 30 140 heavyverb~ ir 256;
+#X obj 30 140 heavyverb~ ir 256 0;
 #X obj 30 190 *~ 0.5;
 #X obj 250 90 *~ 1;
-#X obj 250 140 heavyverb~ ir 256;
+#X obj 250 140 heavyverb~ ir 256 1;
 #X obj 250 190 *~ 0.5;
 #X obj 30 250 dac~ 1 2;
 #N canvas 0 0 450 300 (subpatch) 0;

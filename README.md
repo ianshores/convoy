@@ -27,7 +27,7 @@ PlugData's DAW-hosted version does not support loading custom externals.
 Use `[heavyverb~ array-name 256]` in your own graph. The second argument is the
 partition size, a power of two from 16 through 8192, default 256. The wet signal
 has exactly that many samples of latency (5.33ms for 256 at 48kHz). Disable and
-re-enable DSP to load edits to an array; live IR replacement is not implemented.
+re-enable DSP to load edits to an array in the Pd preview external.
 IR samples are used as-is, without automatic resampling or normalization.
 The preview external currently targets float32 Pd on Linux/macOS; the Linux
 Makefile target is Linux-specific. The optional CMake build handles macOS.
@@ -55,7 +55,11 @@ PlugData's preview search path. Heavy runs in scalar mode, while convolution
 uses its own FFT. Heavy's static CPU estimate excludes this operator.
 
 To build Linux CLAP and VST3, supply a DPF checkout including its submodules
-at revision `4238e1c7f0351bbe488d79f0899c540543ac7583`:
+at revision `4238e1c7f0351bbe488d79f0899c540543ac7583`. The demo's WAV selector
+requires `pkg-config`, libsndfile, libsamplerate, X11 and OpenGL development
+packages. On Debian/Ubuntu: `libsndfile1-dev libsamplerate0-dev libx11-dev
+libgl1-mesa-dev`. DPF builds its editor support in its own `build` directory,
+so that checkout must be writable:
 
 ```sh
 .venv/bin/python tools/build_plugins.py examples/effect.pd build/effect --dpf /path/to/DPF
@@ -67,6 +71,51 @@ is also produced, but this repository has not yet built or tested that source
 against a Wwise SDK. Unreal Submix and MetaSound integration remains to be
 connected to the existing wrapper pipeline and tested. Those integrations
 are not ready for review yet.
+
+## Load your own WAV in REAPER
+
+The **HeavyVerbDemo** CLAP/VST3 effect lists **Ian Shores** as its developer.
+Its editor has **Load WAV…**, **Use demo IR**, and a tail-cutoff slider.
+Build `examples/effect.pd` with `tools/build_plugins.py` to include this editor.
+Other exported graphs use the generic generated host.
+
+Copy `build/effect/bin/HeavyVerbDemo.clap` to `~/.clap/`, or copy the complete
+`HeavyVerbDemo.vst3` bundle to `~/.vst3/`, then rescan in REAPER. Use the effect
+on a send/return track: its output is **wet only**. Select a WAV from your IR
+collection and wait for **WAV ready** before saving the project.
+
+- Mono WAVs supply both convolution channels; stereo WAVs supply left and right
+  independently. PCM16/24/32 and float32/64 are tested. Files must contain one
+  or two channels, last at most 30 seconds, and use 8–384kHz sample rates.
+- The loader converts files to the session sample rate using a sinc resampler.
+  Resampled coefficients are scaled by source rate / session rate to preserve
+  the response's integral. At matching rates, decoded coefficients are unchanged.
+  There is no automatic peak normalization; source files are never modified.
+- Loading and graph construction happen on a worker thread. Playback keeps
+  using the existing response, then fills the new graph's latency buffer and
+  crossfades over 50ms. Switching briefly runs two graphs and uses extra CPU
+  and memory. It does not preserve the old tail beyond the crossfade.
+- Projects save the last successfully loaded **file path**, not the WAV audio.
+  Keep that file available. A failed load leaves the current response active;
+  on a fresh instance, a missing file leaves the built-in demo response active.
+  **Use demo IR** restores the synthetic response included in the Pd graph.
+
+The selector runs the actual exported Pd graph with an IR supplied during
+construction. `[heavyverb~ array-name 256 0]` selects the left channel and
+`[heavyverb~ array-name 256 1]` the right channel when a host provides a stereo
+IR. Generic exports and the Pd preview continue to use their saved array.
+The independent stereo layout is not four-path true-stereo convolution.
+The FFT/convolution core remains dependency-free; file loading uses dynamically
+linked libsndfile (LGPL) and libsamplerate (BSD), with their own license terms.
+
+Run the plugin checks after building:
+
+```sh
+python3 tools/test_wav_selector.py build/effect --dpf /path/to/DPF
+```
+
+See the [WAV-selector validation report](docs/ir-selector/README.md) for tested
+behavior, implementation fixes, and current limits.
 
 ## Optional IR tail cutoff
 

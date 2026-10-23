@@ -1,0 +1,3 @@
+Convolution CPU is excluded from hvcc static estimates; run the benchmark.
+PASS: nine exported cutoff/restore stereo renders via actual parameter receiver
+PASS (custom FFT): 15 stereo exported graph renders, dense 1597-tap IR; max error 7.73e-09; invalid IR/partition rejected
