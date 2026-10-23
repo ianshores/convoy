@@ -17,9 +17,11 @@ Build the external on Linux with a C++17 compiler and the Pure Data headers:
 make pd PD_INCLUDE_DIR=/path/to/pure-data/src
 ```
 
-Open `examples/click-demo.pd` in **standalone** PlugData. Enable DSP and Play
-clicks. Short noise bursts make the echoes easy to hear. The example finds the
-external in `../build`; it contains its own saved 48kHz impulse response.
+Open [`examples/click-demo.pd`](examples/click-demo.pd) in **standalone**
+PlugData. Enable DSP and Play clicks. This demo sends short noise bursts through
+our `heavyverb~` convolution reverb and mixes the dry signal back in. Listen
+for the reflections and decaying reverb tail. The example finds the external
+in `../build` and includes a saved synthetic 48kHz reverb impulse response.
 PlugData's DAW-hosted version does not support loading custom externals.
 
 Use `[heavyverb~ array-name 256]` in your own graph. The second argument is the
@@ -38,7 +40,8 @@ python3 -m venv .venv
 .venv/bin/python tools/export.py examples/effect.pd build/effect --generators c dpf wwise
 ```
 
-`effect.pd` is a stereo wet-only effect with a saved echo/reverb response.
+`effect.pd` is a stereo wet-only convolution reverb using the same saved
+synthetic impulse response.
 `export-test.pd` is a small reference graph with gain stages around the object.
 The adapter registers a **new** Heavy primitive; it does not replace Heavy's
 existing `conv~` or modify your installed compiler. It currently requires
@@ -81,14 +84,29 @@ no allocations during processing. The export test builds and renders a dense
 1597-tap stereo graph at three sample rates and five callback sizes. The Pd
 test renders the real external headlessly and compares its output.
 
-With PFFFT and two-stage partitioning, a dense four-second IR at 48kHz uses
-about **0.18% of one CPU core for mono**, or **0.37% for two independent
-channels**, on the initial Linux laptop. This is roughly seven times less CPU
-than the prior uniform PFFFT implementation (about 1.3% / 2.7%). The one-second
-mono case is about 0.08%. The full IR and requested wet latency are unchanged.
-See [PERFORMANCE.md](PERFORMANCE.md) for matched measurements, callback timing
-checks, and retained timing outliers. CPU figures are averages, not hard
-realtime guarantees. Loaded-game and mobile/console profiling remain.
+**Benchmark machine:** Intel Core Ultra 9 185H laptop running Linux, with one
+benchmark thread pinned to logical CPU 1. Built with GCC 16.2.1, `-O3`, C++17
+for the engine and C99 for PFFFT, without fast-math flags.
+
+The figures below use a dense generated IR at 48kHz, 256-sample early
+partitions, 2048-sample tail partitions, and 64- or 256-sample host callbacks.
+History is fully warmed before timing; results are the median average CPU
+usage from three runs. Percentages are relative to **one CPU core**.
+
+| IR duration | Mono | Two independent channels |
+| --- | ---: | ---: |
+| 1 second | ~0.08% | ~0.16% |
+| 4 seconds | ~0.18% | ~0.37% |
+
+On that same machine and matched four-second workload, the prior uniform PFFFT
+implementation uses about 1.25% mono / 2.63% for two channels. Two-stage
+partitioning reduces average CPU by roughly seven times while preserving the
+full IR and requested wet latency.
+
+These are standalone engine measurements. See [PERFORMANCE.md](PERFORMANCE.md)
+for the raw results, callback timing checks, and retained timing outliers.
+Average CPU figures are not hard realtime guarantees. In-game, mobile, and
+console performance remain unmeasured.
 
 Long IRs use small blocks for early reflections and eight-times-larger blocks
 for the tail, capped at 8192 samples. The tail is time-aligned with the early
