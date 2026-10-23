@@ -10,9 +10,10 @@
 #include <vector>
 
 namespace heavyverb {
+namespace detail {
 // Uniform partitioned overlap-add convolution. Configure on a non-audio thread;
 // process/reset never allocate. One instance per channel; B samples of latency.
-class Convolver {
+class PartitionedConvolver {
     using Complex = std::complex<float>;
     std::size_t b_, n_, bins_, partitions_, cursor_ = 0, position_ = 0;
     std::vector<std::size_t> reverse_;
@@ -73,14 +74,21 @@ class Convolver {
         cursor_ = (cursor_ + 1) % partitions_;
     }
 public:
-    Convolver(const float* ir, std::size_t length, std::size_t partition = 256)
-        : b_(partition), n_(partition * 2), bins_(partition + 1), partitions_(0) {
-        if (partition < 16 || partition > 8192 || (partition & (partition - 1)))
+    static std::size_t checked_partition(std::size_t b) {
+        if (b < 16 || b > 8192 || (b & (b - 1)))
             throw std::invalid_argument("partition must be a power of two from 16 to 8192");
+        return b;
+    }
+    static std::size_t checked_length(const float* ir, std::size_t length) {
         if (!ir || !length || length > 16777216)
             throw std::invalid_argument("IR must contain 1 to 16777216 samples");
         for (std::size_t i = 0; i < length; ++i)
             if (!std::isfinite(ir[i])) throw std::invalid_argument("IR contains non-finite samples");
+        return length;
+    }
+    PartitionedConvolver(const float* ir, std::size_t length, std::size_t partition = 256)
+        : b_(checked_partition(partition)), n_(b_ * 2), bins_(b_ + 1), partitions_(0) {
+        checked_length(ir, length);
         partitions_ = (length + b_ - 1) / b_;
         reverse_.resize(n_); roots_.resize(n_ / 2);
         filter_r_.resize(partitions_ * bins_); filter_i_.resize(partitions_ * bins_);
@@ -133,4 +141,5 @@ public:
         }
     }
 };
+} // namespace detail
 } // namespace heavyverb

@@ -1,6 +1,78 @@
 # CPU optimization measurements
 
-## Two-stage partitioning (latest)
+## Custom FFT with identical partitioning (latest)
+
+The custom radix-2 FFT now supports the same two-stage scheduling as PFFFT.
+The scheduler was moved into `heavyverb.hpp`, above the two uniform FFT
+building blocks, so early/tail split, activation policy, latency alignment,
+callback handling, and reset are identical. No additional custom FFT math
+optimizations were made in this comparison. This establishes a baseline for
+future work on that implementation.
+
+**Hardware and method:** Intel Core Ultra 9 185H laptop, Linux, benchmark
+pinned to logical CPU 1, GCC 16.2.1, `-O3 -std=c++17` for both engine variants
+and `-O3 -std=c99` for PFFFT. No fast-math flags. Both variants use the same
+dense generated IR, 48kHz audio, and fully warmed history. Three alternating
+runs of each of the four configurations processed three seconds of audio per
+case. CPU percentages are medians of the three average wall-time costs,
+relative to one core. Two channels means independent mono engines.
+
+| Four-second IR, 256-sample callbacks | Mono CPU | Two-channel CPU |
+| --- | ---: | ---: |
+| Custom FFT, uniform 256-sample partitions | 1.87% | 3.82% |
+| Custom FFT, two-stage 256/2048-sample partitions | 1.62% | 3.19% |
+| PFFFT, uniform 256-sample partitions | 1.25% | 2.60% |
+| PFFFT, two-stage 256/2048-sample partitions | 0.18% | 0.37% |
+
+The dependency-free two-stage variant costs roughly nine times more CPU than
+PFFFT with the same policy: about +1.44 percentage points of one core for
+mono and +2.82 points for two channels. The earlier comparison of uniform
+backends therefore understated the difference once larger tail transforms
+were introduced. The current custom backend benefits only modestly from
+two-stage scheduling for four-second IRs. For the one-second IR, it actually
+regresses: about 0.87% mono with uniform partitions versus 1.48% with the same
+two-stage policy, compared with PFFFT's 0.08% two-stage result.
+
+Two-stage scheduling changes the transform workload: the late stage uses
+4096-point FFTs instead of the uniform path's 512-point FFTs. The custom
+backend's high, nearly constant cost between one- and four-second IRs suggests
+its transform implementation dominates this workload. This is an inference
+from the ablation, not a separate per-function profile. Optimizing those
+transforms and/or tuning a backend-specific partition policy is future work.
+
+The custom two-stage p99 callbacks for four-second IRs were about 0.43–0.46ms mono
+and 0.89–0.91ms for two channels. In the 96,000-callback custom diagnostic,
+one two-channel 64-sample callback exceeded its 1.333ms deadline: 2.223ms
+elapsed, with 2.220ms of thread CPU during that callback. Other configurations
+had no misses in that run, though a mono 256-sample callback reached 4.792ms.
+This ordinary-priority shared-laptop run does not establish a hard realtime
+guarantee or the cause of the outliers; average CPU alone is insufficient.
+
+**Decision:** PFFFT remains the default; no dependency was removed. The custom
+two-stage backend is selectable through `HEAVYVERB_PORTABLE_FFT` and CMake's
+`-DHEAVYVERB_PORTABLE_FFT=ON`. Both backends pass all 173 audio reference cases.
+The custom variant passes C/C++ allocation checks, address/undefined-behavior
+sanitizers (with leak detection disabled), and a native Pd render of early and
+late response samples. Its CMake build does not link PFFFT, and the resulting
+Pd module contains no PFFFT symbols. The default PFFFT export renders and
+Linux CLAP/VST3 builds also pass. Cradle was not contacted.
+
+Raw measurements: [machine/setup and summary](docs/performance/fft-ablation-summary.json),
+[custom callback diagnostic](docs/performance/fft-ablation-custom-timing.json).
+All twelve raw CSV files are in `docs/performance/fft-ablation-*.csv`, named
+by FFT backend, partition policy, and run number. Build the four benchmarks:
+
+```sh
+make build/heavyverb_benchmark build/heavyverb_benchmark_uniform \
+     build/heavyverb_benchmark_portable build/heavyverb_benchmark_portable_uniform
+```
+
+Use the same CPU affinity for each. `build/heavyverb_benchmark` is PFFFT with
+two-stage partitions; `_uniform` is PFFFT/uniform; `_portable` is custom/two-stage;
+`_portable_uniform` is custom/uniform. Header hashes in the summary identify
+the common-scheduler implementation used for this ablation.
+
+## Two-stage partitioning with PFFFT (historical)
 
 Long responses now keep small blocks for the early reflections and use larger
 blocks for later samples. At the default 256-sample wet latency, the first

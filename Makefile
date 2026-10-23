@@ -36,6 +36,8 @@ build/heavyverb_benchmark: tests/benchmark.cpp $(HEADERS) $(PFFFT_OBJS) | build
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $< $(PFFFT_OBJS) -o $@
 build/heavyverb_benchmark_uniform: tests/benchmark.cpp $(HEADERS) $(PFFFT_OBJS) | build
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -DHEAVYVERB_UNIFORM_PARTITIONS $< $(PFFFT_OBJS) -o $@
+build/heavyverb_benchmark_portable_uniform: tests/benchmark.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) -DHEAVYVERB_PORTABLE_FFT -DHEAVYVERB_UNIFORM_PARTITIONS -Iinclude $< -o $@
 build/heavyverb_benchmark_portable: tests/benchmark.cpp $(HEADERS) | build
 	$(CXX) $(CXXFLAGS) -DHEAVYVERB_PORTABLE_FFT -Iinclude $< -o $@
 benchmark: build/heavyverb_benchmark

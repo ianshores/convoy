@@ -9,6 +9,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument("pd", help="Path to the Pure Data executable")
+parser.add_argument("--external-dir", type=Path, default=ROOT / "build")
 args = parser.parse_args()
 build = ROOT / "build/pd-test"
 build.mkdir(parents=True, exist_ok=True)
@@ -60,7 +61,7 @@ patch = r"""#N canvas 0 0 600 500 10;
 #X connect 11 0 12 0;
 """
 (build / "test.pd").write_text(patch)
-result = subprocess.run([args.pd, "-nogui", "-batch", "-noaudio", "-r", "48000", "-path", str(ROOT / "build"), str(build / "test.pd")], cwd=build, capture_output=True, text=True, timeout=20)
+result = subprocess.run([args.pd, "-nogui", "-batch", "-noaudio", "-r", "48000", "-path", str(args.external_dir.resolve()), str(build / "test.pd")], cwd=build, capture_output=True, text=True, timeout=20)
 assert result.returncode == 0, result.stderr
 assert "error" not in result.stderr.lower() and "couldn't create" not in result.stderr, result.stderr
 data = output.read_bytes()

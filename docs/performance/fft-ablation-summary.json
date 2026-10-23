@@ -1,0 +1,248 @@
+{
+  "machine": "Intel Core Ultra 9 185H",
+  "os": "Linux",
+  "compiler": "GCC 16.2.1",
+  "cpu_affinity": 1,
+  "engine_flags": "-O3 -std=c++17",
+  "pffft_flags": "-O3 -std=c99",
+  "runs": 3,
+  "headers_sha256": {
+    "include/heavyverb.hpp": "07f7fe14fb3bb0793a07a71d23718e36207101e1184a74a1fc19617b19aa5c3e",
+    "include/heavyverb_portable.hpp": "026a5d261da7258b12af31caa450d601ef0226294db845c087f4ae4a7b8691d7",
+    "include/heavyverb_pffft.hpp": "6bf5d80f99dfa835402e65b7a21734f06bc529f77a7ffd441f2b605fc09e4a9b"
+  },
+  "results": [
+    {
+      "case": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.0746476667,
+        "median_p99_us": 18.756,
+        "max_us": 24.309
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 1.49020537,
+        "median_p99_us": 401.644,
+        "max_us": 460.999
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 0.279798667,
+        "median_p99_us": 16.267,
+        "max_us": 32.571
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 0.877590067,
+        "median_p99_us": 51.248,
+        "max_us": 480.9
+      }
+    },
+    {
+      "case": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.0764598977,
+        "median_p99_us": 20.52,
+        "max_us": 47.408
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 1.48068306,
+        "median_p99_us": 414.045,
+        "max_us": 442.461
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 0.285693984,
+        "median_p99_us": 18.975,
+        "max_us": 38.903
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 0.874117427,
+        "median_p99_us": 56.577,
+        "max_us": 90.752
+      }
+    },
+    {
+      "case": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.1552041,
+        "median_p99_us": 40.063,
+        "max_us": 68.426
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 2.97606623,
+        "median_p99_us": 798.612,
+        "max_us": 1262.023
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 0.575655567,
+        "median_p99_us": 33.031,
+        "max_us": 423.697
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 1.75642033,
+        "median_p99_us": 103.533,
+        "max_us": 576.049
+      }
+    },
+    {
+      "case": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.156536911,
+        "median_p99_us": 42.352,
+        "max_us": 61.543
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 2.93458068,
+        "median_p99_us": 818.484,
+        "max_us": 1158.909
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 0.575993161,
+        "median_p99_us": 49.223,
+        "max_us": 73.394
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 1.76862404,
+        "median_p99_us": 114.989,
+        "max_us": 531.889
+      }
+    },
+    {
+      "case": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.178700667,
+        "median_p99_us": 61.419,
+        "max_us": 85.909
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 1.57737987,
+        "median_p99_us": 432.757,
+        "max_us": 922.76
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 1.25027853,
+        "median_p99_us": 71.126,
+        "max_us": 471.206
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 1.84842147,
+        "median_p99_us": 106.395,
+        "max_us": 538.107
+      }
+    },
+    {
+      "case": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.17938482,
+        "median_p99_us": 68.804,
+        "max_us": 107.727
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 1.6174822,
+        "median_p99_us": 460.599,
+        "max_us": 3187.531
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 1.25083949,
+        "median_p99_us": 94.804,
+        "max_us": 132.351
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 1.86586611,
+        "median_p99_us": 113.28,
+        "max_us": 152.069
+      }
+    },
+    {
+      "case": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.3711813,
+        "median_p99_us": 128.683,
+        "max_us": 160.956
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 3.21569847,
+        "median_p99_us": 889.196,
+        "max_us": 1328.95
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 2.60019603,
+        "median_p99_us": 151.338,
+        "max_us": 214.354
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 3.8350064,
+        "median_p99_us": 212.926,
+        "max_us": 3932.183
+      }
+    },
+    {
+      "case": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256"
+      },
+      "pffft-two-stage": {
+        "median_cpu_percent": 0.367469907,
+        "median_p99_us": 134.49,
+        "max_us": 175.094
+      },
+      "custom-two-stage": {
+        "median_cpu_percent": 3.18557856,
+        "median_p99_us": 906.117,
+        "max_us": 1298.069
+      },
+      "pffft-uniform": {
+        "median_cpu_percent": 2.59853147,
+        "median_p99_us": 151.415,
+        "max_us": 550.583
+      },
+      "custom-uniform": {
+        "median_cpu_percent": 3.81755805,
+        "median_p99_us": 240.724,
+        "max_us": 642.53
+      }
+    }
+  ]
+}

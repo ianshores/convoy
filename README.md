@@ -108,6 +108,15 @@ for the raw results, callback timing checks, and retained timing outliers.
 Average CPU figures are not hard realtime guarantees. In-game, mobile, and
 console performance remain unmeasured.
 
+**Custom FFT comparison on the same Intel Core Ultra 9 185H:** both FFT
+backends now share the exact same two-stage partitioning code. With a dense
+four-second IR at 48kHz and 256-sample callbacks, the custom radix-2 FFT uses
+about **1.62% of one core mono / 3.19% for two channels**, versus PFFFT's
+**0.18% / 0.37%**. The current custom implementation is approximately nine
+times more expensive in this configuration. PFFFT remains the default while
+future custom FFT improvements can be measured against this baseline. See
+[the four-way comparison](PERFORMANCE.md#custom-fft-with-identical-partitioning-latest).
+
 Long IRs use small blocks for early reflections and eight-times-larger blocks
 for the tail, capped at 8192 samples. The tail is time-aligned with the early
 path; no response samples are discarded. For the default 256-sample setting,
@@ -119,10 +128,12 @@ CMake's `-DHEAVYVERB_UNIFORM_PARTITIONS=ON`; use
 
 Both FFT backends have 173 direct-reference cases. A Linux linker-interception
 test also checks for C allocations inside PFFFT during processing/reset.
-The previous dependency-free backend remains available by defining
+The dependency-free custom FFT, including two-stage partitioning, is available by defining
 `HEAVYVERB_PORTABLE_FFT`, or configuring CMake with
 `-DHEAVYVERB_PORTABLE_FFT=ON`. Make builds the default and portable core tests;
-`make build/heavyverb_benchmark_portable` builds the comparison benchmark.
+`make build/heavyverb_benchmark_portable` builds its two-stage comparison.
+`make build/heavyverb_benchmark_portable_uniform` builds the custom/uniform
+comparison. `HEAVYVERB_UNIFORM_PARTITIONS` applies equally to both FFT backends.
 
 CMake is also supplied for core tests and optional external builds:
 `cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release` then

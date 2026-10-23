@@ -71,3 +71,20 @@ pass. A 96,000-callback diagnostic had no deadline misses; earlier wall-time
 outliers remain recorded. Unreal/Wwise performance and gameplay checks still
 need Cradle. Cradle was not contacted. The downloaded IR collection remains
 for auditioning until Ian approves a selection; it was not used for these tests.
+
+## Custom FFT comparison
+
+Moved two-stage scheduling above both FFT backends and tested four matched
+configurations on the Intel Core Ultra 9 185H laptop. With a dense four-second
+48kHz IR, 256-sample callbacks, and 256/2048-sample two-stage partitions, custom
+FFT uses about 1.62% mono / 3.19% for two channels; PFFFT uses 0.18% / 0.37% of
+one core. The custom variant's penalty is about ninefold. One-second custom
+FFT is slower with this two-stage policy than with uniform blocks.
+
+PFFFT remains the default. The custom two-stage path is now a tested baseline
+for future FFT optimization. All 173 reference cases pass on both backends;
+the custom path also passes allocation/sanitizer checks and a headless Pd
+render, with no PFFFT symbols in its built Pd module. Default exported audio
+and Linux plugin builds pass. Callback outliers and the custom diagnostic's
+one deadline miss are retained in PERFORMANCE.md and the raw data. No Cradle
+work or IR-library adoption was performed.
