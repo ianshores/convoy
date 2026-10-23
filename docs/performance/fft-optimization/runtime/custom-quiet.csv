@@ -1,0 +1,7 @@
+case,ftz_daz,cpu_percent,checksum
+normal,0,0.241305676,308.524367
+normal,1,0.246487100,308.524367
+near-subnormal-input,0,9.152468176,3.08524363e-35
+near-subnormal-input,1,0.245609732,0
+extreme-780dB-ir-tail,0,0.659314214,77.6026806
+extreme-780dB-ir-tail,1,0.245420331,77.6026806

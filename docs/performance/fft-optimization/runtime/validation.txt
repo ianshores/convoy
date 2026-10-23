@@ -1,0 +1,34 @@
+Validation on Odysseus / Intel Core Ultra 9 185H / GCC 16.2.1 / Linux.
+All tests/builds were headless. No Cradle access.
+
+make -j2 test: both 183-case convolution references, 60 FFT cases each for SSE/scalar, and both malloc/calloc/realloc wrapper tests passed.
+
+sanitizers.log:
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.33786e-06
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.20314e-07, max sampled spectrum error 0.000492512
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.33786e-06
+
+cmake-pd.log:
+100% tests passed out of 4
+PASS: native Pd external rendered matching early and late response; error 1.49e-08
+
+export-custom.log:
+PASS (custom FFT): 15 stereo exported graph renders, dense 1597-tap IR; max error 8.04e-09; invalid IR/partition rejected
+
+export-default.log:
+PASS (PFFFT): 15 stereo exported graph renders, dense 1597-tap IR; max error 7.75e-09; invalid IR/partition rejected
+
+fma-production.log:
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.18333e-07, max sampled spectrum error 0.000492512
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.33786e-06
+
+Sanitizers: -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer; ASAN_OPTIONS=detect_leaks=0. LeakSanitizer was not evaluated.
+Optional production FMA: -O3 -std=c++17 -mfma -mavx -mprefer-vector-width=128 -ffp-contract=off; FFT and core passed.
+Custom CMake native module: HEAVYVERB_PORTABLE_FFT=ON; four CTest cases passed.
+Custom CLAP/VST3 build: tools/build_plugins.py --fft custom succeeded with pinned DPF revision 4238e1c7f0351bbe488d79f0899c540543ac7583.
+DPF fast-math defaults are explicitly overridden by later -fno-fast-math flags in both C and C++ builds.
+Unstripped Heavy graph object: 5 RealFFT symbols, no PFFFT symbols or PFFFT object files. Release plugins are stripped, so absence of binary symbols alone was not used as proof.
+build/effect-custom/bin/HeavyVerbDemo.clap: built successfully.
+build/effect-custom/bin/HeavyVerbDemo.vst3/Contents/x86_64-linux/HeavyVerbDemo.so: built successfully.
+
+PASS: 187 archived header files match recorded SHA-256 hashes.

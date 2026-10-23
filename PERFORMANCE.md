@@ -1,6 +1,22 @@
 # CPU optimization measurements
 
-## Custom FFT with identical partitioning (latest)
+## Latest: custom FFT optimization guide, 2026-10-22
+
+The [optimization report](FFT_OPTIMIZATION_REPORT.md) and
+[per-experiment log](docs/performance/fft-optimization/README.md) supersede the
+custom-FFT performance claims below. On the Intel Core Ultra 9 185H, Linux,
+GCC 16.2.1 `-O3`, 48kHz, four-second dense IR, 256-sample callbacks, and the
+same 256/2048 two-stage policy, five alternating 30-second-audio trials measure
+**0.24% mono / 0.50% two-channel** for the optimized custom engine, versus
+**1.59% / 3.19%** for its original reference and **0.18% / 0.37%** for PFFFT.
+All percentages are elapsed processing cost relative to one core's audio-time
+budget. Latency stays at 256 samples. Raw outliers and stress failures are
+included in the new log. PFFFT remains the default.
+
+The sections below preserve the history of earlier experiments; they do not
+describe the current optimized custom FFT.
+
+## Custom FFT with identical partitioning (historical baseline)
 
 The custom radix-2 FFT now supports the same two-stage scheduling as PFFFT.
 The scheduler was moved into `heavyverb.hpp`, above the two uniform FFT

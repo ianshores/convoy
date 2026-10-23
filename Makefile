@@ -28,10 +28,22 @@ timing: build/heavyverb_timing
 	./build/heavyverb_timing
 REALTIME_TEST = build/heavyverb_realtime
 endif
-test: build/heavyverb_test build/heavyverb_test_portable $(REALTIME_TEST)
+build/heavyverb_fft_test: tests/fft.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) -Iinclude $< -o $@
+build/heavyverb_fft_test_scalar: tests/fft.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) -DHEAVYVERB_FFT_SCALAR -Iinclude $< -o $@
+ifeq ($(shell uname -s),Linux)
+build/heavyverb_realtime_portable: tests/realtime.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) -DHEAVYVERB_PORTABLE_FFT -Iinclude $< -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o $@
+REALTIME_PORTABLE_TEST = build/heavyverb_realtime_portable
+endif
+test: build/heavyverb_test build/heavyverb_test_portable build/heavyverb_fft_test build/heavyverb_fft_test_scalar $(REALTIME_TEST) $(REALTIME_PORTABLE_TEST)
 	./build/heavyverb_test
 	./build/heavyverb_test_portable
+	./build/heavyverb_fft_test
+	./build/heavyverb_fft_test_scalar
 	$(if $(REALTIME_TEST),./$(REALTIME_TEST),@true)
+	$(if $(REALTIME_PORTABLE_TEST),./$(REALTIME_PORTABLE_TEST),@true)
 build/heavyverb_benchmark: tests/benchmark.cpp $(HEADERS) $(PFFFT_OBJS) | build
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $< $(PFFFT_OBJS) -o $@
 build/heavyverb_benchmark_uniform: tests/benchmark.cpp $(HEADERS) $(PFFFT_OBJS) | build

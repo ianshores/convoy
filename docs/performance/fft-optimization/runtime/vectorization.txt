@@ -1,0 +1,57 @@
+/usr/include/c++/16/bits/move.h:239:11: optimized: basic block part vectorized using 16 byte vectors
+/usr/include/c++/16/bits/move.h:239:11: optimized: basic block part vectorized using 16 byte vectors
+include/heavyverb_fft.hpp:147:35: optimized: loop vectorized using 16 byte vectors and unroll factor 2
+include/heavyverb_fft.hpp:147:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_fft.hpp:211:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_fft.hpp:211:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_fft.hpp:236:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_fft.hpp:236:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_fft.hpp:236:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_fft.hpp:162:39: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_fft.hpp:162:39: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_fft.hpp:162:39: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_fft.hpp:147:35: optimized: loop vectorized using 16 byte vectors and unroll factor 2
+include/heavyverb_fft.hpp:147:35: optimized:  loop versioned for vectorization because of possible aliasing
+/usr/include/c++/16/bits/stl_uninitialized.h:926:15: optimized: loop vectorized using 16 byte vectors and unroll factor 2
+/usr/include/c++/16/bits/stl_vector.h:407:25: optimized: basic block part vectorized using 16 byte vectors
+/usr/include/c++/16/complex:1446:9: optimized: basic block part vectorized using 8 byte vectors
+/usr/include/c++/16/bits/stl_vector.h:106:4: optimized: basic block part vectorized using 16 byte vectors
+/usr/include/c++/16/bits/stl_vector.h:106:4: optimized: basic block part vectorized using 16 byte vectors
+/usr/include/c++/16/bits/stl_vector.h:106:4: optimized: basic block part vectorized using 16 byte vectors
+/usr/include/c++/16/bits/stl_vector.h:106:4: optimized: basic block part vectorized using 16 byte vectors
+include/heavyverb_fft.hpp:178:28: optimized: basic block part vectorized using 8 byte vectors
+/usr/include/c++/16/bits/stl_vector.h:106:4: optimized: basic block part vectorized using 16 byte vectors
+/usr/include/c++/16/bits/random.tcc:412:42: optimized: loop vectorized using 16 byte vectors and unroll factor 2
+/usr/include/c++/16/bits/random.tcc:404:32: optimized: loop vectorized using 16 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:45:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:45:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_portable.hpp:45:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:27:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:27:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:45:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:45:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_portable.hpp:45:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:27:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:27:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:45:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:45:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_portable.hpp:45:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:27:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:27:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:45:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:45:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_portable.hpp:45:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:27:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:27:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:45:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:45:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_portable.hpp:45:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:27:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:27:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:45:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:45:35: optimized:  loop versioned for vectorization because of possible aliasing
+include/heavyverb_portable.hpp:45:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb_portable.hpp:27:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+include/heavyverb_portable.hpp:27:35: optimized: epilogue loop vectorized using 8 byte vectors and unroll factor 2
+include/heavyverb.hpp:28:11: optimized: basic block part vectorized using 16 byte vectors
+/usr/include/c++/16/bits/stl_vector.h:106:4: optimized: basic block part vectorized using 16 byte vectors

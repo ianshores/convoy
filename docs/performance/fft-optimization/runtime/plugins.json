@@ -1,0 +1,18 @@
+[
+  {
+    "path": "build/effect-custom/bin/HeavyVerbDemo.clap",
+    "sha256": "3c25256c845b9ac79396d5534c8a91428207fd99718eb5a19730bd04084c16a8",
+    "backend_verified_via_unstripped_object": "build/effect-custom/build/Heavy_HeavyVerbDemo.cpp.o",
+    "custom_fft_symbols_in_input_object": 5,
+    "pffft_objects_present": false,
+    "fast_math": false
+  },
+  {
+    "path": "build/effect-custom/bin/HeavyVerbDemo.vst3/Contents/x86_64-linux/HeavyVerbDemo.so",
+    "sha256": "ece2c299ec93dbc2451c1e9e2b1b1fba99b8abb255dca51c5e5c406c5e988a5c",
+    "backend_verified_via_unstripped_object": "build/effect-custom/build/Heavy_HeavyVerbDemo.cpp.o",
+    "custom_fft_symbols_in_input_object": 5,
+    "pffft_objects_present": false,
+    "fast_math": false
+  }
+]

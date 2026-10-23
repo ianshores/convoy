@@ -62,6 +62,10 @@ at revision `4238e1c7f0351bbe488d79f0899c540543ac7583`:
 .venv/bin/python tools/build_plugins.py examples/effect.pd build/effect --dpf /path/to/DPF
 ```
 
+Add `--fft custom` to build with the optimized dependency-free FFT instead;
+use a separate output such as `build/effect-custom`. This excludes PFFFT objects
+from the custom CLAP/VST3 build. The default remains PFFFT.
+
 The plugins are written to `build/effect/bin`. The wet latency is currently
 not reported to the DAW for automatic compensation. Generated Wwise source
 is also produced, but this repository has not yet built or tested that source
@@ -77,45 +81,42 @@ make check-export PYTHON=.venv/bin/python
 make check-pd PD=/path/to/pd
 ```
 
-The engine is checked against direct convolution in 173 cases, including a
+The engine is checked against direct convolution in 183 cases, including a
 dense four-second IR. Tests include
 arbitrary callback sizes, full tails, exact in-place processing, reset, and
 no allocations during processing. The export test builds and renders a dense
 1597-tap stereo graph at three sample rates and five callback sizes. The Pd
 test renders the real external headlessly and compares its output.
 
-**Benchmark machine:** Intel Core Ultra 9 185H laptop running Linux, with one
-benchmark thread pinned to logical CPU 1. Built with GCC 16.2.1, `-O3`, C++17
-for the engine and C99 for PFFFT, without fast-math flags.
+**Benchmark machine:** Intel Core Ultra 9 185H laptop, Linux, GCC 16.2.1,
+`-O3 -std=c++17` (C99 for PFFFT), pinned to logical CPU 1. No fast-math,
+FMA, or native-CPU build flags. Dense synthetic four-second IR at 48kHz,
+256-sample callbacks and early partitions, 2048-sample tail partitions,
+256-sample wet latency. Five alternating trials measure 30 seconds of audio
+per case after warming the full history. Figures are median elapsed processing
+cost as a percentage of **one core's audio-time budget**.
 
-The figures below use a dense generated IR at 48kHz, 256-sample early
-partitions, 2048-sample tail partitions, and 64- or 256-sample host callbacks.
-History is fully warmed before timing; results are the median average CPU
-usage from three runs. Percentages are relative to **one CPU core**.
-
-| IR duration | Mono | Two independent channels |
+| FFT backend, same two-stage policy | Mono | Two independent channels |
 | --- | ---: | ---: |
-| 1 second | ~0.08% | ~0.16% |
-| 4 seconds | ~0.18% | ~0.37% |
+| Original custom FFT (preserved reference) | 1.59% | 3.19% |
+| Optimized custom FFT | **0.24%** | **0.50%** |
+| PFFFT (default) | 0.18% | 0.37% |
 
-On that same machine and matched four-second workload, the prior uniform PFFFT
-implementation uses about 1.25% mono / 2.63% for two channels. Two-stage
-partitioning reduces average CPU by roughly seven times while preserving the
-full IR and requested wet latency.
+The custom FFT now uses a real-input transform, separate real/imaginary planes,
+contiguous coefficients, four-float SSE butterflies on supported x86 targets,
+and radix-4 forward/inverse stages that share an internal bin order. A scalar
+fallback remains available. It preserves the full IR and requested latency.
+The custom engine uses about **85% less CPU** than its original implementation;
+it costs about **34% more than PFFFT** here, approximately +0.06 percentage
+points of one core for mono. Other workloads can differ substantially.
 
-These are standalone engine measurements. See [PERFORMANCE.md](PERFORMANCE.md)
-for the raw results, callback timing checks, and retained timing outliers.
-Average CPU figures are not hard realtime guarantees. In-game, mobile, and
-console performance remain unmeasured.
-
-**Custom FFT comparison on the same Intel Core Ultra 9 185H:** both FFT
-backends now share the exact same two-stage partitioning code. With a dense
-four-second IR at 48kHz and 256-sample callbacks, the custom radix-2 FFT uses
-about **1.62% of one core mono / 3.19% for two channels**, versus PFFFT's
-**0.18% / 0.37%**. The current custom implementation is approximately nine
-times more expensive in this configuration. PFFFT remains the default while
-future custom FFT improvements can be measured against this baseline. See
-[the four-way comparison](PERFORMANCE.md#custom-fft-with-identical-partitioning-latest).
+Read the [optimization report](FFT_OPTIMIZATION_REPORT.md) for each suggestion's
+measured effect, rejected experiments, and validation. The
+[full log](docs/performance/fft-optimization/README.md) includes raw trials,
+callback outliers, multi-instance stress failures, and reproduction commands.
+These are standalone engine measurements, not hard realtime guarantees or
+in-game, mobile, or console measurements. [PERFORMANCE.md](PERFORMANCE.md)
+retains the earlier historical comparisons.
 
 Long IRs use small blocks for early reflections and eight-times-larger blocks
 for the tail, capped at 8192 samples. The tail is time-aligned with the early
@@ -126,8 +127,10 @@ PFFFT processing remains available through `HEAVYVERB_UNIFORM_PARTITIONS`, or
 CMake's `-DHEAVYVERB_UNIFORM_PARTITIONS=ON`; use
 `make build/heavyverb_benchmark_uniform` to build its comparison benchmark.
 
-Both FFT backends have 173 direct-reference cases. A Linux linker-interception
-test also checks for C allocations inside PFFFT during processing/reset.
+Both FFT backends have 183 direct-reference cases. Linux linker-interception
+tests also check C allocations on both backends during processing/reset.
+The custom FFT has 60 additional transform cases in both SSE and scalar builds,
+covering every supported size, DC, Nyquist, tones, random input, and decay.
 The dependency-free custom FFT, including two-stage partitioning, is available by defining
 `HEAVYVERB_PORTABLE_FFT`, or configuring CMake with
 `-DHEAVYVERB_PORTABLE_FFT=ON`. Make builds the default and portable core tests;

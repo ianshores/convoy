@@ -105,6 +105,20 @@ int main() {
                 for (auto v : output) require(v == 0, "reset left a tail-stage echo");
             }
         }
+        // Cover every supported partition size with a dense direct reference.
+        for(std::size_t b=16;b<=8192;b*=2) {
+            const std::size_t length=2*b+1,source_length=97;
+            std::vector<float> ir(length),input(source_length+length+b,0.f),output(input.size()),expected(input.size(),0.f);
+            for(auto& v:ir)v=random(rng)*.1f;
+            for(std::size_t i=0;i<source_length;++i)input[i]=random(rng);
+            for(std::size_t i=0;i<source_length;++i)for(std::size_t j=0;j<length;++j)expected[i+j+b]+=input[i]*ir[j];
+            heavyverb::Convolver c(ir.data(),length,b);
+            for(std::size_t i=0;i<input.size();i+=33)c.process(input.data()+i,output.data()+i,std::min<std::size_t>(33,input.size()-i));
+            for(std::size_t i=0;i<output.size();++i) {
+                const auto e=std::abs(double(output[i])-expected[i]);worst=std::max(worst,e);
+                require(e<.0001,"supported partition size differs from direct reference");
+            }
+        }
         float impulse = 1;
         for (auto b : {0u, 15u, 33u, 16384u}) {
             bool rejected = false;
@@ -114,6 +128,6 @@ int main() {
         bool rejected = false;
         try { heavyverb::Convolver c(nullptr, 0); } catch (const std::invalid_argument&) { rejected = true; }
         require(rejected, "empty IR accepted");
-        std::cout << "PASS: 173 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error " << worst << '\n';
+        std::cout << "PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error " << worst << '\n';
     } catch (const std::exception& e) { std::cerr << e.what() << '\n'; return 1; }
 }

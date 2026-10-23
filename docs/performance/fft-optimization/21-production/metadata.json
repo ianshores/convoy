@@ -1,0 +1,44 @@
+{
+  "label": "21-production",
+  "utc": "2026-10-23T04:47:41Z",
+  "cpu": "Intel(R) Core(TM) Ultra 9 185H",
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "flags": [
+    "-O3",
+    "-std=c++17",
+    "-Wall",
+    "-Wextra",
+    "-DHEAVYVERB_PORTABLE_FFT",
+    "-I/home/ian/dev/code/heavyverb/build/fft-optimization/21-production/include"
+  ],
+  "link_objects": [],
+  "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+  "logical_cpu": 1,
+  "sample_rate": 48000,
+  "head_partition": 256,
+  "tail_partition": 2048,
+  "latency_samples": 256,
+  "baseline": false,
+  "pffft": false,
+  "definitions": [],
+  "headers": {
+    "heavyverb.hpp": "07f7fe14fb3bb0793a07a71d23718e36207101e1184a74a1fc19617b19aa5c3e",
+    "heavyverb_fft.hpp": "803445ca17b35d53d23c19edd76ce97dc212d1d5e703f2fada9a4d07616cbd42",
+    "heavyverb_pffft.hpp": "6bf5d80f99dfa835402e65b7a21734f06bc529f77a7ffd441f2b605fc09e4a9b",
+    "heavyverb_portable.hpp": "c63030327184eabd9a703c8115f6795232169596a008fa0b142565b743b22b53"
+  },
+  "sources": {
+    "core.cpp": "f8becddef5a612936d8059a7951efa9deaa1abf97826674348e73b4953bf7026",
+    "benchmark.cpp": "099b39ae9b4c34efc52d857ca81435e53f3e577a23ee4256e6587d118ec104a0",
+    "realtime.cpp": "ccb04a71ccaa068ceeea9ce49bc2d7fdb6e4d1e26253fd537bdc89ca831d238c",
+    "timing.cpp": "eee8410d02b0e09021465430489717eecbd113e9a5b5b81751d1d488268a5828",
+    "fft.cpp": "f54b127b38cdd9258246947614a43d9d70022cd44f5419feff951f4d38207204",
+    "fft_benchmark.cpp": "d6199ce95bb7095482941c913ffdac42987d9d31f48237574b0d09437cf6f6b6",
+    "original_fft_benchmark.cpp": "21ec02b5e6c451a51e34f5e8df3479e17f1c8dfb57affd84e1fdc832da895755",
+    "quiet.cpp": "507de781c40a9281c84b1de472b52bb1cb8871455e852fd050840d73ff570704",
+    "load.cpp": "fb080ecf7f77bd7678bef767ec951dbb4a2b4a35090b0d1c575bad929204dfac"
+  },
+  "measured_audio_seconds": 30,
+  "runs": 3,
+  "method": "Seeded dense IR/input, IR-length warmup, elapsed processing / audio duration as percent of one core; ordinary priority; no silence shortcut. Runs are sequential, never concurrent."
+}

@@ -1,0 +1,1 @@
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 5.36442e-07, worst RMS 1.29631e-07, max sampled spectrum error 0.00050369

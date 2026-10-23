@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
 """Build and render an exported stereo graph against an independent reference."""
+import argparse
 import ctypes as C
 import json
 from pathlib import Path
@@ -9,7 +10,10 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "build/export-test"
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--portable", action="store_true", help="Render using the custom FFT without linking PFFFT")
+args = parser.parse_args()
+BUILD = ROOT / ("build/export-test-custom" if args.portable else "build/export-test")
 BUILD.mkdir(parents=True, exist_ok=True)
 rng = random.Random(9901)
 ir = [rng.uniform(-0.05, 0.05) for _ in range(1597)]
@@ -23,10 +27,13 @@ src = BUILD / "c"
 libpath = BUILD / "libtest.so"
 objects = []
 for source in src.glob("*.c"):
+    if args.portable and source.name in {"pffft.c", "pffft_common.c"}:
+        continue
     obj = BUILD / (source.stem + ".o")
     subprocess.run(["cc", "-std=c99", "-O2", "-fPIC", "-DPFFFT_STATIC_DEFINE", "-DHV_SIMD_NONE=1", "-c", str(source), "-o", str(obj)], check=True)
     objects.append(str(obj))
 subprocess.run(["c++", "-std=c++17", "-O2", "-shared", "-fPIC", "-DHV_SIMD_NONE=1", "-DPFFFT_STATIC_DEFINE",
+                *(["-DHEAVYVERB_PORTABLE_FFT"] if args.portable else []),
                 *map(str, src.glob("*.cpp")), *objects, "-o", str(libpath)], check=True)
 lib = C.CDLL(str(libpath))
 fp = C.POINTER(C.c_float)
@@ -71,4 +78,4 @@ for name, bad in (("missing", patch.replace("heavyverb~ ir", "heavyverb~ missing
     assert result.returncode != 0, name
     assert "heavyverb~" in result.stderr, result.stderr
 (BUILD / "audio-results.json").write_text(json.dumps(results, indent=2) + "\n")
-print(f"PASS: 15 stereo exported graph renders, dense 1597-tap IR; max error {max(r['max_error'] for r in results):.3g}; invalid IR/partition rejected")
+print(f"PASS ({'custom FFT' if args.portable else 'PFFFT'}): 15 stereo exported graph renders, dense 1597-tap IR; max error {max(r['max_error'] for r in results):.3g}; invalid IR/partition rejected")

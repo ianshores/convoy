@@ -1,0 +1,3 @@
+fft_size,forward_us,inverse_us,copy_zero_us,overlap_us,mac_partitions,mac_us
+512,0.860554,0.998980,0.013653,0.031307,8,0.689081
+4096,8.397995,8.954358,0.088080,0.224629,93,83.720586

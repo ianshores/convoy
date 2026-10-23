@@ -1,0 +1,56 @@
+{
+  "label": "20-selective-reconstruction",
+  "utc": "2026-10-23T04:45:43Z",
+  "cpu": "Intel(R) Core(TM) Ultra 9 185H",
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "flags": [
+    "-O3",
+    "-std=c++17",
+    "-Wall",
+    "-Wextra",
+    "-DHEAVYVERB_PORTABLE_FFT",
+    "-DHEAVYVERB_FFT_STEP=6",
+    "-DHEAVYVERB_COMPACT_PLAN",
+    "-DHEAVYVERB_ORDERED_RECONSTRUCTION",
+    "-DHEAVYVERB_SSE_RECONSTRUCTION",
+    "-DHEAVYVERB_RECON_MIN_SIZE=1024",
+    "-I/home/ian/dev/code/heavyverb/build/fft-optimization/20-selective-reconstruction/include"
+  ],
+  "link_objects": [],
+  "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+  "logical_cpu": 1,
+  "sample_rate": 48000,
+  "head_partition": 256,
+  "tail_partition": 2048,
+  "latency_samples": 256,
+  "baseline": false,
+  "pffft": false,
+  "definitions": [
+    "HEAVYVERB_FFT_STEP=6",
+    "HEAVYVERB_COMPACT_PLAN",
+    "HEAVYVERB_ORDERED_RECONSTRUCTION",
+    "HEAVYVERB_SSE_RECONSTRUCTION",
+    "HEAVYVERB_RECON_MIN_SIZE=1024"
+  ],
+  "headers": {
+    "heavyverb.hpp": "134cd7d1ae2717603552e08e2d5e2e60d73eec402f1b693264cc2a8b87579564",
+    "heavyverb_fft.hpp": "0f455dbc47830223df9021203901cd6f3c55bd8ce0fd109074eda4e5e158164d",
+    "heavyverb_pffft.hpp": "6bf5d80f99dfa835402e65b7a21734f06bc529f77a7ffd441f2b605fc09e4a9b",
+    "heavyverb_portable.hpp": "2df690955e7f86747ff6acda416e3090ad3d4f156a56af2d3ec53b4d182454ef"
+  },
+  "sources": {
+    "core.cpp": "f8becddef5a612936d8059a7951efa9deaa1abf97826674348e73b4953bf7026",
+    "benchmark.cpp": "099b39ae9b4c34efc52d857ca81435e53f3e577a23ee4256e6587d118ec104a0",
+    "realtime.cpp": "ccb04a71ccaa068ceeea9ce49bc2d7fdb6e4d1e26253fd537bdc89ca831d238c",
+    "timing.cpp": "eee8410d02b0e09021465430489717eecbd113e9a5b5b81751d1d488268a5828",
+    "fft.cpp": "dacbee66eff53f5b98086bd70f6b0b11e72e979469cdf5404882f30527e5f99d",
+    "fft_benchmark.cpp": "812fb3fbe98dec2f443fd698d9881a9d9a2f8b52130e164b0010ce4f8f4b7ea8",
+    "original_fft_benchmark.cpp": "0847909720c2caf63db0b3a81da0a4b66c7e54edbb5a50db32483d7b45900934",
+    "quiet.cpp": "a218285068e3680d0a3d39f53e9ed3a68922bdcab882fc70c978e310c1335251",
+    "load.cpp": "aefece384a432fdd94fd88dac6d53f5f253e731b219192d76b3e9a9d5362cf29"
+  },
+  "measured_audio_seconds": 30,
+  "runs": 3,
+  "method": "Seeded dense IR/input, IR-length warmup, elapsed processing / audio duration as percent of one core; ordinary priority; no silence shortcut. Runs are sequential, never concurrent.",
+  "effective_fft_step": 7
+}

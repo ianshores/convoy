@@ -4,6 +4,7 @@
 #endif
 #include HEAVYVERB_HEADER
 #include <chrono>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -23,7 +24,9 @@ int main() {
         // Fill every history partition before timing; there is no silence shortcut.
         for (int i = 0; i < seconds * 48000; i += callback)
             for (auto& engine : engines) engine->process(input.data(), output.data(), callback);
-        const int repeats = 3 * 48000 / callback;
+        const char* requested=std::getenv("HEAVYVERB_BENCH_SECONDS");
+        const int duration=requested?std::max(1,std::atoi(requested)):3;
+        const int repeats = duration * 48000 / callback;
         std::vector<double> times; times.reserve(repeats);
         double total_us = 0, checksum = 0;
         for (int i = 0; i < repeats; ++i) {

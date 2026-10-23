@@ -88,3 +88,12 @@ render, with no PFFFT symbols in its built Pd module. Default exported audio
 and Linux plugin builds pass. Callback outliers and the custom diagnostic's
 one deadline miss are retained in PERFORMANCE.md and the raw data. No Cradle
 work or IR-library adoption was performed.
+
+
+## Custom FFT optimization guide follow-up — 2026-10-22
+
+The previous custom radix-2 comparison above is now historical. The optimized
+real-input, four-float SSE, radix-4 DIF/DIT implementation passes 183 convolution
+references and 60 transform cases per execution path. See
+[the final report](FFT_OPTIMIZATION_REPORT.md) for the measured staircase,
+rejected ideas, current CPU comparison, numerical checks, and remaining limits.
