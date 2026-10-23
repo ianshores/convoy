@@ -43,8 +43,7 @@ python3 -m venv .venv
 `effect.pd` is a stereo wet-only convolution reverb using the same saved
 synthetic impulse response.
 `export-test.pd` is a small reference graph with gain stages around the object.
-The adapter registers a **new** Heavy primitive; it does not replace Heavy's
-existing `conv~` or modify your installed compiler. It currently requires
+The adapter registers a dedicated Heavy primitive and requires
 hvcc 0.17.2 and uses private compiler APIs, so other versions are rejected.
 Use this driver instead of PlugData's built-in Export command.
 
@@ -64,7 +63,7 @@ at revision `4238e1c7f0351bbe488d79f0899c540543ac7583`:
 
 Add `--fft custom` to build with the optimized dependency-free FFT instead;
 use a separate output such as `build/effect-custom`. This excludes PFFFT objects
-from the custom CLAP/VST3 build. The default remains PFFFT.
+from the custom CLAP/VST3 build. The default is PFFFT.
 
 The plugins are written to `build/effect/bin`. The wet latency is currently
 not reported to the DAW for automatic compensation. Generated Wwise source
@@ -98,16 +97,14 @@ cost as a percentage of **one core's audio-time budget**.
 
 | FFT backend, same two-stage policy | Mono | Two independent channels |
 | --- | ---: | ---: |
-| Original custom FFT (preserved reference) | 1.59% | 3.19% |
 | Optimized custom FFT | **0.24%** | **0.50%** |
 | PFFFT (default) | 0.18% | 0.37% |
 
-The custom FFT now uses a real-input transform, separate real/imaginary planes,
+The custom FFT uses a real-input transform, separate real/imaginary planes,
 contiguous coefficients, four-float SSE butterflies on supported x86 targets,
 and radix-4 forward/inverse stages that share an internal bin order. A scalar
-fallback remains available. It preserves the full IR and requested latency.
-The custom engine uses about **85% less CPU** than its original implementation;
-it costs about **34% more than PFFFT** here, approximately +0.06 percentage
+fallback is available. It preserves the full IR and requested latency.
+The custom engine costs about **34% more than PFFFT** here, approximately +0.06 percentage
 points of one core for mono. Other workloads can differ substantially.
 
 Read the [optimization report](FFT_OPTIMIZATION_REPORT.md) for each suggestion's
@@ -158,6 +155,6 @@ explicitly applies MIT to its IR audio, including contributor files. Its README
 lists 738 IRs; the current WAV files occupy about 1.20GB, covering rooms, outdoors, plates, springs, hardware,
 and other sounds. The [license notice](https://github.com/itsmusician/IR-Library/blob/main/License.md)
 must accompany redistributed files. None of that collection is bundled here
-yet; the current demos still use our generated response. The local collection
+yet; the demos use our generated response. The local collection
 is for auditioning; Ian must approve the sound before any selected responses
 are used in the project. Verified 2026-10-22.
