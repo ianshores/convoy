@@ -1,3 +1,11 @@
+# Current performance
+
+See the [third-round report](FFT_ROUND3_REPORT.md) for the current custom engine,
+full CPU/compiler details, all optimization deltas, and validation. On Intel Core
+Ultra 9 185H, its AVX path uses 0.1495% mono / 0.3165% two channels for the
+four-second, 48kHz, 256-sample callback workload (seven-trial median).
+The sections below record historical decisions and measurements.
+
 # CPU optimization measurements
 
 ## Current measurements: second FFT round, 2026-10-22

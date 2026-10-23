@@ -1,0 +1,17 @@
+{
+  "backend": "custom with runtime AVX and fallback",
+  "host_audition": false,
+  "unstripped_object_has_RealFFT_and_no_PFFFT": true,
+  "binaries": [
+    {
+      "path": "build/effect-custom/bin/HeavyVerbDemo.clap",
+      "bytes": 409976,
+      "sha256": "35dbb3ba2603c62760d2c27ef8f91316b45d5dda5bc9ade0166eee2c653c636a"
+    },
+    {
+      "path": "build/effect-custom/bin/HeavyVerbDemo.vst3/Contents/x86_64-linux/HeavyVerbDemo.so",
+      "bytes": 442760,
+      "sha256": "bb6cb125c94829e6d1e7659dda4dfc2c4ab62dd13ebf87577833b45fd4a1417c"
+    }
+  ]
+}

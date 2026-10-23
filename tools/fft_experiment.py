@@ -35,6 +35,7 @@ def main():
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--seconds", type=int, default=3)
     parser.add_argument("--cxx-flag", action="append", default=[])
+    parser.add_argument("--c-flag", action="append", default=[])
     args = parser.parse_args()
     if not re.fullmatch(r"[a-zA-Z0-9_-]+", args.label):
         parser.error("label must contain only letters, digits, underscores or hyphens")
@@ -46,6 +47,10 @@ def main():
     output.mkdir(parents=True)
     build = ROOT / "build/fft-optimization" / args.label
     include = build / "include"
+    sources = build / "tests"
+    sources.mkdir(parents=True, exist_ok=True)
+    for source in (ROOT / "tests").glob("*.cpp"):
+        shutil.copy2(source, sources / source.name)
     shutil.copytree(ROOT / "include", include, dirs_exist_ok=True)
     if args.baseline:
         shutil.copy2(ROOT / "tests/reference/original_portable.hpp", include / "heavyverb_portable.hpp")
@@ -66,6 +71,15 @@ def main():
         run(["make", "build/pffft.o", "build/pffft_common.o"], cwd=ROOT)
         flags.extend(["-I" + str(ROOT / "third_party/pffft"), "-DPFFFT_STATIC_DEFINE"])
         link = [str(ROOT / "build/pffft.o"), str(ROOT / "build/pffft_common.o")]
+        if args.c_flag:
+            link = []
+            for name in ("pffft", "pffft_common"):
+                obj = build / (name + ".o")
+                run(["cc", "-O3", "-std=c99", "-fPIC", "-DPFFFT_STATIC_DEFINE",
+                     *args.c_flag, "-I" + str(ROOT / "third_party/pffft"), "-c",
+                     str(ROOT / "third_party/pffft" / (name + ".c")), "-o", str(obj)])
+                link.append(str(obj))
+
     metadata = {
         "label": args.label,
         "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -73,6 +87,8 @@ def main():
         "compiler": subprocess.check_output(["c++", "--version"], text=True).splitlines()[0],
         "flags": flags,
         "link_objects": link,
+        "extra_c_flags": args.c_flag,
+        "link_object_sha256": {path: hashlib.sha256(Path(path).read_bytes()).hexdigest() for path in link},
         "platform": platform.platform(),
         "logical_cpu": 1,
         "sample_rate": 48000,
@@ -83,15 +99,15 @@ def main():
         "pffft": args.pffft,
         "definitions": args.define,
         "headers": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(include.glob("*.hpp"))},
-        "sources": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in (ROOT / "tests").glob("*.cpp")},
+        "sources": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in sources.glob("*.cpp")},
         "measured_audio_seconds": args.seconds,
         "runs": args.runs,
         "method": "Seeded dense IR/input, IR-length warmup, elapsed processing / audio duration as percent of one core; ordinary priority; no silence shortcut. Runs are sequential, never concurrent.",
     }
     (output / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
 
-    def compile_source(name, source):
-        run(["c++", *flags, str(ROOT / "tests" / source), *link, "-o", str(build / name)])
+    def compile_source(name, source, extra=()):
+        run(["c++", *flags, *extra, str(sources / source), *link, "-o", str(build / name)])
 
     def capture(name):
         result = subprocess.run(["taskset", "-c", "1", str(build / name)], capture_output=True, text=True)
@@ -111,6 +127,15 @@ def main():
     elif not args.pffft:
         compile_source("fft-correctness", "fft.cpp")
         capture("fft-correctness")
+        if "void forward_half(" in (include / "heavyverb_fft.hpp").read_text():
+            compile_source("fft-half-correctness", "fft.cpp", ["-DHEAVYVERB_TEST_HALF_FORWARD"])
+            capture("fft-half-correctness")
+        if "void forward_half_packed(" in (include / "heavyverb_fft.hpp").read_text():
+            packed_flags = ["-DHEAVYVERB_TEST_PACKED"]
+            if re.search(r"spectrum\s*\+\s*8", (include / "heavyverb_fft.hpp").read_text()):
+                packed_flags.append("-DHEAVYVERB_TEST_PACKED8")
+            compile_source("fft-packed-correctness", "fft.cpp", packed_flags)
+            capture("fft-packed-correctness")
         compile_source("components", "fft_benchmark.cpp")
         capture("components")
     elif args.pffft:

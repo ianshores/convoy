@@ -1,0 +1,10 @@
+{
+  "headers": {
+    "heavyverb.hpp": "07f7fe14fb3bb0793a07a71d23718e36207101e1184a74a1fc19617b19aa5c3e",
+    "heavyverb_pffft.hpp": "6bf5d80f99dfa835402e65b7a21734f06bc529f77a7ffd441f2b605fc09e4a9b",
+    "heavyverb_fft.hpp": "a2adefc9d84a160460f9319050b0948a42aa339efda98e613d2a5fd9068624f7",
+    "heavyverb_portable.hpp": "89f66760a434d8841a5b5e0427127e2b386ffc51ccf4dd085eaad1983a25495e"
+  },
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "equivalence": "Production equals measured r3-14 after clang-format; see snapshot-audit.txt."
+}

@@ -1,0 +1,189 @@
+{
+  "runs": 5,
+  "seed": "941 + trial",
+  "logical_cpu": 1,
+  "commands": [
+    {
+      "label": "r3-00-control",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-control/include",
+        "/home/ian/dev/code/heavyverb/tests/fft_active_benchmark.cpp",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-control/active-components"
+      ],
+      "source_sha256": "e0403ab273afc8b004c4b1bb67aa071a60e480241accd5227d0a5a298dc40f76"
+    },
+    {
+      "label": "r3-00-control",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-control/include",
+        "/home/ian/dev/code/heavyverb/tests/partition_benchmark.cpp",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-control/partition-components"
+      ],
+      "source_sha256": "2a932f0471b11b3d77eec66904c42f7d4d2c5068334fe3dd61d7506ecd4e9704"
+    },
+    {
+      "label": "r3-00-pffft",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-pffft/include",
+        "-I/home/ian/dev/code/heavyverb/third_party/pffft",
+        "-DPFFFT_STATIC_DEFINE",
+        "/home/ian/dev/code/heavyverb/tests/fft_active_benchmark.cpp",
+        "/home/ian/dev/code/heavyverb/build/pffft.o",
+        "/home/ian/dev/code/heavyverb/build/pffft_common.o",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-pffft/active-components"
+      ],
+      "source_sha256": "e0403ab273afc8b004c4b1bb67aa071a60e480241accd5227d0a5a298dc40f76"
+    },
+    {
+      "label": "r3-00-pffft",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-pffft/include",
+        "-I/home/ian/dev/code/heavyverb/third_party/pffft",
+        "-DPFFFT_STATIC_DEFINE",
+        "/home/ian/dev/code/heavyverb/tests/partition_benchmark.cpp",
+        "/home/ian/dev/code/heavyverb/build/pffft.o",
+        "/home/ian/dev/code/heavyverb/build/pffft_common.o",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-00-pffft/partition-components"
+      ],
+      "source_sha256": "2a932f0471b11b3d77eec66904c42f7d4d2c5068334fe3dd61d7506ecd4e9704"
+    },
+    {
+      "label": "r3-12-pffft-avx",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-mavx",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/include",
+        "-I/home/ian/dev/code/heavyverb/third_party/pffft",
+        "-DPFFFT_STATIC_DEFINE",
+        "-DHEAVYVERB_PROFILE_PACKED",
+        "/home/ian/dev/code/heavyverb/tests/fft_active_benchmark.cpp",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/pffft.o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/pffft_common.o",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/active-components"
+      ],
+      "source_sha256": "e0403ab273afc8b004c4b1bb67aa071a60e480241accd5227d0a5a298dc40f76"
+    },
+    {
+      "label": "r3-12-pffft-avx",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-mavx",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/include",
+        "-I/home/ian/dev/code/heavyverb/third_party/pffft",
+        "-DPFFFT_STATIC_DEFINE",
+        "-DHEAVYVERB_PROFILE_PACKED",
+        "/home/ian/dev/code/heavyverb/tests/partition_benchmark.cpp",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/pffft.o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/pffft_common.o",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/partition-components"
+      ],
+      "source_sha256": "2a932f0471b11b3d77eec66904c42f7d4d2c5068334fe3dd61d7506ecd4e9704"
+    },
+    {
+      "label": "r3-14-avx-butterflies",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/include",
+        "-DHEAVYVERB_PROFILE_PACKED",
+        "/home/ian/dev/code/heavyverb/tests/fft_active_benchmark.cpp",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/active-components"
+      ],
+      "source_sha256": "e0403ab273afc8b004c4b1bb67aa071a60e480241accd5227d0a5a298dc40f76"
+    },
+    {
+      "label": "r3-14-avx-butterflies",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/include",
+        "-DHEAVYVERB_PROFILE_PACKED",
+        "/home/ian/dev/code/heavyverb/tests/partition_benchmark.cpp",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/partition-components"
+      ],
+      "source_sha256": "2a932f0471b11b3d77eec66904c42f7d4d2c5068334fe3dd61d7506ecd4e9704"
+    },
+    {
+      "label": "r3-15-sse-fallback",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-DHEAVYVERB_DISABLE_AVX",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-15-sse-fallback/include",
+        "-DHEAVYVERB_PROFILE_PACKED",
+        "/home/ian/dev/code/heavyverb/tests/fft_active_benchmark.cpp",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-15-sse-fallback/active-components"
+      ],
+      "source_sha256": "e0403ab273afc8b004c4b1bb67aa071a60e480241accd5227d0a5a298dc40f76"
+    },
+    {
+      "label": "r3-15-sse-fallback",
+      "command": [
+        "c++",
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-DHEAVYVERB_DISABLE_AVX",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r3-15-sse-fallback/include",
+        "-DHEAVYVERB_PROFILE_PACKED",
+        "/home/ian/dev/code/heavyverb/tests/partition_benchmark.cpp",
+        "-o",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-15-sse-fallback/partition-components"
+      ],
+      "source_sha256": "2a932f0471b11b3d77eec66904c42f7d4d2c5068334fe3dd61d7506ecd4e9704"
+    }
+  ]
+}

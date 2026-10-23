@@ -1,0 +1,82 @@
+{
+  "r3-00-control": {
+    "active-components": {
+      "512:forward_us": 0.553278,
+      "512:inverse_us": 0.600521,
+      "512:custom_runtime_avx": 0.0,
+      "4096:forward_us": 6.208719,
+      "4096:inverse_us": 5.99766,
+      "4096:custom_runtime_avx": 0.0
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 1.897825,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 65.887619
+    }
+  },
+  "r3-00-pffft": {
+    "active-components": {
+      "512:forward_us": 0.273857,
+      "512:inverse_us": 0.284589,
+      "512:custom_runtime_avx": 0.0,
+      "4096:forward_us": 2.881386,
+      "4096:inverse_us": 2.708833,
+      "4096:custom_runtime_avx": 0.0
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 1.344405,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 63.212104
+    }
+  },
+  "r3-12-pffft-avx": {
+    "active-components": {
+      "512:forward_us": 0.255406,
+      "512:inverse_us": 0.267954,
+      "512:custom_runtime_avx": 0.0,
+      "4096:forward_us": 2.70496,
+      "4096:inverse_us": 2.537507,
+      "4096:custom_runtime_avx": 0.0
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 1.192719,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 59.86548
+    }
+  },
+  "r3-14-avx-butterflies": {
+    "active-components": {
+      "512:forward_us": 0.332754,
+      "512:inverse_us": 0.379774,
+      "512:custom_runtime_avx": 1.0,
+      "4096:forward_us": 3.438295,
+      "4096:inverse_us": 3.735525,
+      "4096:custom_runtime_avx": 1.0
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 1.235983,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 50.153338
+    }
+  },
+  "r3-15-sse-fallback": {
+    "active-components": {
+      "512:forward_us": 0.371734,
+      "512:inverse_us": 0.431021,
+      "512:custom_runtime_avx": 0.0,
+      "4096:forward_us": 4.272854,
+      "4096:inverse_us": 4.657388,
+      "4096:custom_runtime_avx": 0.0
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 1.436946,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 54.360745
+    }
+  }
+}

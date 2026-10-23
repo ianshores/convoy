@@ -1,0 +1,3 @@
+fft_size,forward_us,inverse_us,custom_runtime_avx
+512,0.257604,0.272518,0
+4096,2.704960,2.537507,0

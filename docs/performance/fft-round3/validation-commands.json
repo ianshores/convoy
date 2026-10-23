@@ -1,0 +1,156 @@
+[
+  {
+    "command": [
+      "make",
+      "-j2",
+      "test"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "make",
+      "-j2",
+      "build/heavyverb_quality",
+      "build/heavyverb_quality_portable"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O1",
+      "-g",
+      "-std=c++17",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-Iinclude",
+      "-DHEAVYVERB_PORTABLE_FFT",
+      "tests/core.cpp",
+      "-o",
+      "build/r3-core-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/r3-core-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O1",
+      "-g",
+      "-std=c++17",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-Iinclude",
+      "tests/fft.cpp",
+      "-o",
+      "build/r3-fft-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/r3-fft-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O1",
+      "-g",
+      "-std=c++17",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-Iinclude",
+      "-DHEAVYVERB_TEST_HALF_FORWARD",
+      "tests/fft.cpp",
+      "-o",
+      "build/r3-fft-half-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/r3-fft-half-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O1",
+      "-g",
+      "-std=c++17",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-Iinclude",
+      "-DHEAVYVERB_TEST_PACKED",
+      "-DHEAVYVERB_TEST_PACKED8",
+      "tests/fft.cpp",
+      "-o",
+      "build/r3-fft-packed-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/r3-fft-packed-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/ian/dev/code/pd-patches/.toolchain/venv/bin/python",
+      "tests/export.py",
+      "--portable"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/tools-venv/bin/cmake",
+      "--build",
+      "build-cmake-custom-comparison",
+      "-j2"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/tools-venv/bin/ctest",
+      "--test-dir",
+      "build-cmake-custom-comparison",
+      "--output-on-failure"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "tests/pd.py",
+      "/home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/bin/pd",
+      "--external-dir",
+      "build-cmake-custom-comparison"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/ian/dev/code/pd-patches/.toolchain/venv/bin/python",
+      "tools/build_plugins.py",
+      "examples/effect.pd",
+      "build/effect-custom",
+      "--dpf",
+      "/home/ian/dev/code/pd-patches/.toolchain/dpf",
+      "--fft",
+      "custom"
+    ],
+    "exit_code": 0
+  }
+]

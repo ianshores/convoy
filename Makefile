@@ -37,11 +37,29 @@ build/heavyverb_realtime_portable: tests/realtime.cpp $(HEADERS) | build
 	$(CXX) $(CXXFLAGS) -DHEAVYVERB_PORTABLE_FFT -Iinclude $< -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o $@
 REALTIME_PORTABLE_TEST = build/heavyverb_realtime_portable
 endif
-test: build/heavyverb_test build/heavyverb_test_portable build/heavyverb_fft_test build/heavyverb_fft_test_scalar $(REALTIME_TEST) $(REALTIME_PORTABLE_TEST)
+# Exercise every public transform path with runtime AVX, forced SSE, and scalar code.
+EXTRA_FFT_TESTS = build/heavyverb_fft_half build/heavyverb_fft_packed \
+ build/heavyverb_fft_sse build/heavyverb_fft_half_sse build/heavyverb_fft_packed_sse \
+ build/heavyverb_fft_half_scalar build/heavyverb_fft_packed_scalar
+build/heavyverb_fft_half: EXTRA_FFT_DEFINES = -DHEAVYVERB_TEST_HALF_FORWARD
+build/heavyverb_fft_packed: EXTRA_FFT_DEFINES = -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8
+build/heavyverb_fft_sse: EXTRA_FFT_DEFINES = -DHEAVYVERB_DISABLE_AVX
+build/heavyverb_fft_half_sse: EXTRA_FFT_DEFINES = -DHEAVYVERB_DISABLE_AVX -DHEAVYVERB_TEST_HALF_FORWARD
+build/heavyverb_fft_packed_sse: EXTRA_FFT_DEFINES = -DHEAVYVERB_DISABLE_AVX -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8
+build/heavyverb_fft_half_scalar: EXTRA_FFT_DEFINES = -DHEAVYVERB_FFT_SCALAR -DHEAVYVERB_TEST_HALF_FORWARD
+build/heavyverb_fft_packed_scalar: EXTRA_FFT_DEFINES = -DHEAVYVERB_FFT_SCALAR -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8
+$(EXTRA_FFT_TESTS): tests/fft.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) $(EXTRA_FFT_DEFINES) -Iinclude $< -o $@
+build/heavyverb_test_portable_sse: tests/core.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) -DHEAVYVERB_PORTABLE_FFT -DHEAVYVERB_DISABLE_AVX -Iinclude $< -o $@
+build/heavyverb_test_portable_scalar: tests/core.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) -DHEAVYVERB_PORTABLE_FFT -DHEAVYVERB_FFT_SCALAR -Iinclude $< -o $@
+test: $(EXTRA_FFT_TESTS) build/heavyverb_test_portable_sse build/heavyverb_test_portable_scalar build/heavyverb_test build/heavyverb_test_portable build/heavyverb_fft_test build/heavyverb_fft_test_scalar $(REALTIME_TEST) $(REALTIME_PORTABLE_TEST)
 	./build/heavyverb_test
 	./build/heavyverb_test_portable
 	./build/heavyverb_fft_test
 	./build/heavyverb_fft_test_scalar
+	for check in $(EXTRA_FFT_TESTS) build/heavyverb_test_portable_sse build/heavyverb_test_portable_scalar; do ./$$check || exit $$?; done
 	$(if $(REALTIME_TEST),./$(REALTIME_TEST),@true)
 	$(if $(REALTIME_PORTABLE_TEST),./$(REALTIME_PORTABLE_TEST),@true)
 build/heavyverb_benchmark: tests/benchmark.cpp $(HEADERS) $(PFFFT_OBJS) | build
@@ -61,3 +79,12 @@ check-export:
 	$(PYTHON) tests/export.py
 check-pd:
 	$(PYTHON) tests/pd.py "$(PD)"
+
+build/heavyverb_quality: tests/quality.cpp $(HEADERS) $(PFFFT_OBJS) | build
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $< $(PFFFT_OBJS) -o $@
+build/heavyverb_quality_portable: tests/quality.cpp $(HEADERS) | build
+	$(CXX) $(CXXFLAGS) -DHEAVYVERB_PORTABLE_FFT -Iinclude $< -o $@
+.PHONY: quality
+quality: build/heavyverb_quality build/heavyverb_quality_portable
+	./build/heavyverb_quality
+	./build/heavyverb_quality_portable

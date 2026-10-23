@@ -1,0 +1,1 @@
+Compilation failed before testing or benchmarking: local variable half shadowed template parameter half. Fixed by naming the parameter half_input. Preserved this source snapshot; corrected candidate is r3-02b-pruned-forward.

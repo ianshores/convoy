@@ -35,7 +35,25 @@ int main() {
                     if (type == 5)
                         in[i] = float(noise(gen) * std::exp(-30. * i / n));
                 }
+#ifdef HEAVYVERB_TEST_PACKED
+                std::fill(in.begin() + n / 2, in.end(), 0.f);
+#ifdef HEAVYVERB_TEST_PACKED8
+                constexpr std::size_t width = 8;
+#else
+                constexpr std::size_t width = 4;
+#endif
+                std::vector<float> packed(n + 2 * width, 0.f);
+                plan.forward_half_packed(in.data(), packed.data());
+                for (std::size_t k = 0; k <= n / 2; ++k) {
+                    real[k] = packed[(k / width) * 2 * width + k % width];
+                    imag[k] = packed[(k / width) * 2 * width + k % width + width];
+                }
+#elif defined(HEAVYVERB_TEST_HALF_FORWARD)
+                std::fill(in.begin() + n / 2, in.end(), 0.f);
+                plan.forward_half(in.data(), real.data(), imag.data());
+#else
                 plan.forward(in.data(), real.data(), imag.data());
+#endif
                 // Independent double-precision full complex reference, checking
                 // every bin (in addition to the direct DFT samples below).
                 std::vector<std::complex<double>> reference(in.begin(), in.end());
@@ -83,7 +101,11 @@ int main() {
                     if (err > 3.e-6 * n)
                         throw std::runtime_error("FFT spectrum differs from double DFT");
                 }
+#ifdef HEAVYVERB_TEST_PACKED
+                plan.inverse_packed(packed.data(), out.data());
+#else
                 plan.inverse(real.data(), imag.data(), out.data());
+#endif
                 double sq = 0;
                 for (std::size_t j = 0; j < n; ++j) {
                     double e = double(out[j]) - in[j];

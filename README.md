@@ -87,61 +87,42 @@ no allocations during processing. The export test builds and renders a dense
 1597-tap stereo graph at three sample rates and five callback sizes. The Pd
 test renders the real external headlessly and compares its output.
 
-**Benchmark machine:** Intel Core Ultra 9 185H laptop, Linux, GCC 16.2.1,
-`-O3 -std=c++17` (C99 for PFFFT), pinned to logical CPU 1. No fast-math,
-FMA, or native-CPU build flags. Dense synthetic four-second IR at 48kHz,
-256-sample callbacks and early partitions, 2048-sample tail partitions,
-256-sample wet latency. Five shuffled trials measure 30 seconds of audio
-per case after warming the full history. Figures are median elapsed processing
-cost as a percentage of **one core's audio-time budget**.
+**Benchmark machine:** Intel Core Ultra 9 185H, Linux, GCC 16.2.1, logical CPU 1,
+`-O3 -std=c++17` / C99, no fast-math or FMA. Seven shuffled 30-second-audio trials,
+48kHz, dense four-second synthetic IR, 256-sample callback/latency, 256/2048
+partitions. Median processing cost as a percentage of one core's audio budget:
 
-| FFT backend, same two-stage policy | Mono | Two independent channels |
-| --- | ---: | ---: |
-| Custom FFT | **0.19%** | **0.40%** |
-| PFFFT (default) | 0.18% | 0.37% |
+| Engine | Mono | Two independent channels |
+|---|---:|---:|
+| Custom, runtime AVX | **0.1495%** | **0.3165%** |
+| PFFFT, generic | 0.1813% | 0.3801% |
+| PFFFT, compiled with `-mavx` | 0.1717% | 0.3640% |
 
-The custom FFT uses a real-input transform, separate real/imaginary planes,
-contiguous coefficients, and four-float SSE butterflies on supported x86 targets.
-Radix-4 stages share an internal bin order; terminal stages process independent
-groups together. Paired real-spectrum reconstruction, fused inverse scaling,
-padded spectrum strides, and paired partition accumulation reduce processing
-cost. A scalar fallback is available. The full IR and requested latency are
-preserved.
+The custom whole convolver leads generic PFFFT by 13–18% across the eight tested
+workloads and its AVX-targeted control by 4–14%. The FFT uses radix-4 stages,
+physical-order reconstruction, a pruned half-input forward transform, packed
+spectra, four-partition mixing batches, and optional runtime AVX on GNU/Clang
+x86 builds. SSE and scalar fallbacks preserve compatibility. Define
+`HEAVYVERB_DISABLE_AVX` (or the matching CMake option) to force the fallback.
+These performance results describe the AVX path on this CPU, not other devices.
 
-The custom engine costs about **7% more than PFFFT** in this four-second test,
-approximately +0.013 percentage points of one core for mono. For a one-second
-IR under the same conditions, custom uses 0.103% mono / 0.213% for two channels,
-versus PFFFT's 0.078% / 0.158%, a 33–34% relative difference. PFFFT is the default.
+The complete IR and requested wet latency are preserved. Full-tail comparisons
+against double precision at 44.1/48/96kHz give 131.94–134.97dB residual SNR.
+General, half-input, and packed FFT tests cover AVX, SSE, and scalar paths.
+No allocations occur during processing/reset. Timing stress tests can still
+miss deadlines; average CPU is not a realtime guarantee.
 
-Read the [second optimization report](FFT_ROUND2_REPORT.md) for the investigation,
-each change's measured effect, numerical checks, and the complete workload
-comparison. The [second-round logs](docs/performance/fft-round2/README.md)
-contain raw trials and source snapshots. The [first optimization report](FFT_OPTIMIZATION_REPORT.md)
-and [first-round logs](docs/performance/fft-optimization/README.md) document the
-preceding experiments. These are standalone engine measurements on the CPU
-listed above. Ordinary-priority trials include callback deadline misses;
-these figures are not hard realtime guarantees or in-game, mobile, or console
-measurements. [PERFORMANCE.md](PERFORMANCE.md) contains historical comparisons.
+Read the [third optimization report](FFT_ROUND3_REPORT.md) for every experiment,
+rejected variants, quality checks, and the PFFFT comparison. [Raw records](docs/performance/fft-round3/README.md)
+include exact source snapshots and benchmark metadata.
+[PERFORMANCE.md](PERFORMANCE.md) links historical rounds.
 
-Long IRs use small blocks for early reflections and eight-times-larger blocks
-for the tail, capped at 8192 samples. The tail is time-aligned with the early
-path; no response samples are discarded. For the default 256-sample setting,
-the first 2048 IR samples use small blocks and the rest use 2048-sample blocks.
-The policy activates for IRs longer than 4096 samples at this setting. Uniform
-PFFFT processing remains available through `HEAVYVERB_UNIFORM_PARTITIONS`, or
-CMake's `-DHEAVYVERB_UNIFORM_PARTITIONS=ON`; use
-`make build/heavyverb_benchmark_uniform` to build its comparison benchmark.
-
-Both FFT backends have 183 direct-reference cases. Linux linker-interception
-tests also check C allocations on both backends during processing/reset.
-The custom FFT has 60 additional transform cases in both SSE and scalar builds,
-covering every supported size, DC, Nyquist, tones, random input, and decay.
-The dependency-free custom FFT, including two-stage partitioning, is available by defining
-`HEAVYVERB_PORTABLE_FFT`, or configuring CMake with
-`-DHEAVYVERB_PORTABLE_FFT=ON`. Make builds the default and portable core tests;
-`make build/heavyverb_benchmark_portable` builds its two-stage comparison.
-`make build/heavyverb_benchmark_portable_uniform` builds the custom/uniform
-comparison. `HEAVYVERB_UNIFORM_PARTITIONS` applies equally to both FFT backends.
+Long IRs use small blocks for early reflections and eight-times-larger tail
+blocks, capped at 8192 samples. At the default setting the first 2048 IR samples
+use 256-sample blocks and the rest use 2048-sample blocks. Uniform scheduling is
+available through `HEAVYVERB_UNIFORM_PARTITIONS` or its matching CMake option.
+The custom backend is selected with `HEAVYVERB_PORTABLE_FFT`, or CMake's
+`-DHEAVYVERB_PORTABLE_FFT=ON`.
 
 CMake is also supplied for core tests and optional external builds:
 `cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release` then

@@ -1,0 +1,162 @@
+COMMAND: ['make', '-j2', 'test']
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_TEST_HALF_FORWARD -Iinclude tests/fft.cpp -o build/heavyverb_fft_half
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8 -Iinclude tests/fft.cpp -o build/heavyverb_fft_packed
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_DISABLE_AVX -Iinclude tests/fft.cpp -o build/heavyverb_fft_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_DISABLE_AVX -DHEAVYVERB_TEST_HALF_FORWARD -Iinclude tests/fft.cpp -o build/heavyverb_fft_half_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_DISABLE_AVX -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8 -Iinclude tests/fft.cpp -o build/heavyverb_fft_packed_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_FFT_SCALAR -DHEAVYVERB_TEST_HALF_FORWARD -Iinclude tests/fft.cpp -o build/heavyverb_fft_half_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_FFT_SCALAR -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8 -Iinclude tests/fft.cpp -o build/heavyverb_fft_packed_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -DHEAVYVERB_DISABLE_AVX -Iinclude tests/core.cpp -o build/heavyverb_test_portable_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -DHEAVYVERB_FFT_SCALAR -Iinclude tests/core.cpp -o build/heavyverb_test_portable_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude -Ithird_party/pffft -DPFFFT_STATIC_DEFINE tests/core.cpp build/pffft.o build/pffft_common.o -o build/heavyverb_test
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -Iinclude tests/core.cpp -o build/heavyverb_test_portable
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude tests/fft.cpp -o build/heavyverb_fft_test
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_FFT_SCALAR -Iinclude tests/fft.cpp -o build/heavyverb_fft_test_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude -Ithird_party/pffft -DPFFFT_STATIC_DEFINE tests/realtime.cpp build/pffft.o build/pffft_common.o -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o build/heavyverb_realtime
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -Iinclude tests/realtime.cpp -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o build/heavyverb_realtime_portable
+./build/heavyverb_test
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.21865e-06
+./build/heavyverb_test_portable
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+./build/heavyverb_fft_test
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+./build/heavyverb_fft_test_scalar
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+for check in build/heavyverb_fft_half build/heavyverb_fft_packed build/heavyverb_fft_sse build/heavyverb_fft_half_sse build/heavyverb_fft_packed_sse build/heavyverb_fft_half_scalar build/heavyverb_fft_packed_scalar build/heavyverb_test_portable_sse build/heavyverb_test_portable_scalar; do ./$check || exit $?; done
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+./build/heavyverb_realtime
+PASS: C malloc/calloc/realloc interception found zero audio processing/reset allocations
+./build/heavyverb_realtime_portable
+PASS: C malloc/calloc/realloc interception found zero audio processing/reset allocations
+COMMAND: ['make', '-j2', 'build/heavyverb_quality', 'build/heavyverb_quality_portable']
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude -Ithird_party/pffft -DPFFFT_STATIC_DEFINE tests/quality.cpp build/pffft.o build/pffft_common.o -o build/heavyverb_quality
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -Iinclude tests/quality.cpp -o build/heavyverb_quality_portable
+COMMAND: ['c++', '-O1', '-g', '-std=c++17', '-fsanitize=address,undefined', '-fno-omit-frame-pointer', '-Iinclude', '-DHEAVYVERB_PORTABLE_FFT', 'tests/core.cpp', '-o', 'build/r3-core-sanitized']
+COMMAND: ['build/r3-core-sanitized']
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+COMMAND: ['c++', '-O1', '-g', '-std=c++17', '-fsanitize=address,undefined', '-fno-omit-frame-pointer', '-Iinclude', 'tests/fft.cpp', '-o', 'build/r3-fft-sanitized']
+COMMAND: ['build/r3-fft-sanitized']
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+COMMAND: ['c++', '-O1', '-g', '-std=c++17', '-fsanitize=address,undefined', '-fno-omit-frame-pointer', '-Iinclude', '-DHEAVYVERB_TEST_HALF_FORWARD', 'tests/fft.cpp', '-o', 'build/r3-fft-half-sanitized']
+COMMAND: ['build/r3-fft-half-sanitized']
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+COMMAND: ['c++', '-O1', '-g', '-std=c++17', '-fsanitize=address,undefined', '-fno-omit-frame-pointer', '-Iinclude', '-DHEAVYVERB_TEST_PACKED', '-DHEAVYVERB_TEST_PACKED8', 'tests/fft.cpp', '-o', 'build/r3-fft-packed-sanitized']
+COMMAND: ['build/r3-fft-packed-sanitized']
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+COMMAND: ['/home/ian/dev/code/pd-patches/.toolchain/venv/bin/python', 'tests/export.py', '--portable']
+Convolution CPU is excluded from hvcc static estimates; run the benchmark.
+PASS (custom FFT): 15 stereo exported graph renders, dense 1597-tap IR; max error 7.73e-09; invalid IR/partition rejected
+COMMAND: ['build/tools-venv/bin/cmake', '--build', 'build-cmake-custom-comparison', '-j2']
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ian/dev/code/heavyverb/build-cmake-custom-comparison
+[  6%] Building CXX object CMakeFiles/heavyverb_fft_test.dir/tests/fft.cpp.o
+[ 12%] Building CXX object CMakeFiles/heavyverb_test.dir/tests/core.cpp.o
+[ 18%] Linking CXX executable heavyverb_fft_test
+[ 18%] Built target heavyverb_fft_test
+[ 25%] Building CXX object CMakeFiles/heavyverb_fft_test_scalar.dir/tests/fft.cpp.o
+[ 31%] Linking CXX executable heavyverb_test
+[ 31%] Built target heavyverb_test
+[ 37%] Building CXX object CMakeFiles/heavyverb_fft_half.dir/tests/fft.cpp.o
+[ 43%] Linking CXX executable heavyverb_fft_test_scalar
+[ 43%] Built target heavyverb_fft_test_scalar
+[ 50%] Building CXX object CMakeFiles/heavyverb_fft_packed.dir/tests/fft.cpp.o
+[ 56%] Linking CXX executable heavyverb_fft_half
+[ 56%] Built target heavyverb_fft_half
+[ 62%] Building CXX object CMakeFiles/heavyverb_realtime.dir/tests/realtime.cpp.o
+[ 68%] Linking CXX executable heavyverb_fft_packed
+[ 68%] Built target heavyverb_fft_packed
+[ 75%] Building CXX object CMakeFiles/heavyverb_benchmark.dir/tests/benchmark.cpp.o
+[ 81%] Linking CXX executable heavyverb_realtime
+[ 81%] Built target heavyverb_realtime
+[ 87%] Building CXX object CMakeFiles/heavyverb_pd.dir/pd/heavyverb_tilde.cpp.o
+[ 93%] Linking CXX executable heavyverb_benchmark
+[ 93%] Built target heavyverb_benchmark
+[100%] Linking CXX shared module "heavyverb~.pd_linux"
+[100%] Built target heavyverb_pd
+COMMAND: ['build/tools-venv/bin/ctest', '--test-dir', 'build-cmake-custom-comparison', '--output-on-failure']
+Test project /home/ian/dev/code/heavyverb/build-cmake-custom-comparison
+    Start 1: convolution
+1/6 Test #1: convolution ......................   Passed    0.07 sec
+    Start 2: fft
+2/6 Test #2: fft ..............................   Passed    0.04 sec
+    Start 3: fft_scalar
+3/6 Test #3: fft_scalar .......................   Passed    0.04 sec
+    Start 4: fft_half
+4/6 Test #4: fft_half .........................   Passed    0.04 sec
+    Start 5: fft_packed
+5/6 Test #5: fft_packed .......................   Passed    0.04 sec
+    Start 6: realtime
+6/6 Test #6: realtime .........................   Passed    0.01 sec
+
+100% tests passed out of 6
+
+Total Test time (real) =   0.24 sec
+COMMAND: ['python3', 'tests/pd.py', '/home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/bin/pd', '--external-dir', 'build-cmake-custom-comparison']
+PASS: native Pd external rendered matching early and late response; error 2.24e-08
+COMMAND: ['/home/ian/dev/code/pd-patches/.toolchain/venv/bin/python', 'tools/build_plugins.py', 'examples/effect.pd', 'build/effect-custom', '--dpf', '/home/ian/dev/code/pd-patches/.toolchain/dpf', '--fft', 'custom']
+Convolution CPU is excluded from hvcc static estimates; run the benchmark.
+make: Entering directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+rm -rf ../../build
+rm -rf ../../bin/HeavyVerbDemo
+rm -rf ../../bin/HeavyVerbDemo-*
+rm -rf ../../bin/HeavyVerbDemo.clap
+rm -rf ../../bin/HeavyVerbDemo.component
+rm -rf ../../bin/HeavyVerbDemo.lv2
+rm -rf ../../bin/HeavyVerbDemo.vst
+rm -rf ../../bin/HeavyVerbDemo.vst3
+make: Leaving directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+make: Entering directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+Compiling HeavyContext.cpp
+Compiling HeavyDPF_HeavyVerbDemo.cpp
+Compiling Heavy_HeavyVerbDemo.cpp
+Compiling HvHeavy.cpp
+Compiling HvLightPipe.c
+Compiling HvMessage.c
+In file included from HvMessage.h:20,
+                 from HvMessage.c:17:
+HvMessage.c: In function ‘msg_copyToBuffer’:
+HvUtils.h:134:38: warning: ‘strncpy’ specified bound depends on the length of the source argument [-Wstringop-truncation]
+  134 | #define hv_strncpy(_dst, _src, _len) strncpy(_dst, _src, _len)
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+HvMessage.c:74:7: note: in expansion of macro ‘hv_strncpy’
+   74 |       hv_strncpy(p, msg_getSymbol(m,i), symLen);
+      |       ^~~~~~~~~~
+HvUtils.h:128:22: note: length computed here
+  128 | #define hv_strlen(a) strlen(a)
+      |                      ^~~~~~~~~
+HvMessage.c:72:44: note: in expansion of macro ‘hv_strlen’
+   72 |       const hv_size_t symLen = (hv_size_t) hv_strlen(msg_getSymbol(m,i)) + 1; // include the trailing null char
+      |                                            ^~~~~~~~~
+Compiling HvMessagePool.c
+Compiling HvMessageQueue.c
+Compiling HvSignalVar.c
+Compiling HvTable.c
+Compiling HvUtils.c
+HvUtils.c: In function ‘hv_string_to_hash’:
+HvUtils.c:45:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   45 |     case 3: x ^= (str[2] << 16);
+      |             ~~^~~~~~~~~~~~~~~~~
+HvUtils.c:46:5: note: here
+   46 |     case 2: x ^= (str[1] << 8);
+      |     ^~~~
+HvUtils.c:46:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   46 |     case 2: x ^= (str[1] << 8);
+      |             ~~^~~~~~~~~~~~~~~~
+HvUtils.c:47:5: note: here
+   47 |     case 1: x ^= str[0]; x *= n;
+      |     ^~~~
+Compiling DistrhoPluginMain.cpp (CLAP)
+Compiling DistrhoPluginMain.cpp (VST3)
+Creating CLAP plugin for HeavyVerbDemo
+Creating VST3 plugin for HeavyVerbDemo
+make: Leaving directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+Built plugins in /home/ian/dev/code/heavyverb/build/effect-custom/bin
