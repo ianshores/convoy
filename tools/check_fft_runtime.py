@@ -15,7 +15,7 @@ args = parser.parse_args()
 OUTPUT = ROOT / args.output
 OUTPUT.mkdir(parents=True, exist_ok=True)
 BUILD = ROOT / "build/fft-optimization/runtime"
-BUILD.mkdir(exist_ok=True)
+BUILD.mkdir(parents=True, exist_ok=True)
 metadata = {
     "cpu": next(line.split(":", 1)[1].strip() for line in Path("/proc/cpuinfo").read_text().splitlines() if line.startswith("model name")),
     "compiler": subprocess.check_output(["c++", "--version"], text=True).splitlines()[0],
@@ -25,14 +25,9 @@ metadata = {
     "headers": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in (ROOT / "include").glob("*.hpp")},
     "executions": [],
 }
-for backend in ("custom", "pffft"):
+for backend in ("custom",):
     flags = ["-O3", "-std=c++17", "-I" + str(ROOT / "include")]
     link = []
-    if backend == "custom":
-        flags.append("-DHEAVYVERB_PORTABLE_FFT")
-    else:
-        flags.extend(["-I" + str(ROOT / "third_party/pffft"), "-DPFFFT_STATIC_DEFINE"])
-        link = [str(ROOT / "build/pffft.o"), str(ROOT / "build/pffft_common.o")]
     for diagnostic in ("timing", "load", "quiet"):
         executable = BUILD / (backend + "-" + diagnostic)
         command = ["c++", *flags, str(ROOT / "tests" / (diagnostic + ".cpp")), *link, "-o", str(executable)]

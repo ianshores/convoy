@@ -27,8 +27,8 @@ def register():
     from hvcc.generators.ir2c.HeavyObject import HeavyObject as CObject
     from hvcc.generators.ir2c.ir2c import ir2c
     definition = IRNode.model_validate({
-        "inlets": ["~f>"], "outlets": ["~f>"],
-        "ir": {"control": False, "signal": True, "init": True},
+        "inlets": ["~f>", "-->"], "outlets": ["~f>"],
+        "ir": {"control": True, "signal": True, "init": True},
         "args": [
             {"name": "table", "value_type": "string", "default": "", "required": True},
             {"name": "partition", "value_type": "int", "default": 256, "required": False}],
@@ -74,6 +74,12 @@ def register():
             return [f"hvVerb_{obj_id}.reset();"]
 
         @classmethod
+        def get_C_onMessage(cls, obj_type, obj_id, inlet_index, args):
+            if inlet_index != 1:
+                return []
+            return [f"if (msg_isFloat(m, 0)) Context(_c)->hvVerb_{obj_id}->set_tail_cutoff_db(msg_getFloat(m, 0));"]
+
+        @classmethod
         def get_C_process(cls, process_dict, obj_type, obj_id, args):
             source = cls._c_buffer(process_dict.inputBuffers[0])
             dest = cls._c_buffer(process_dict.outputBuffers[0])
@@ -101,17 +107,6 @@ def register():
             output = Path(kwargs["output_dir"])
             for header in (ROOT / "include").glob("*.hpp"):
                 shutil.copy2(header, output / header.name)
-            vendor = ROOT / "third_party/pffft"
-            for source in vendor.iterdir():
-                if source.is_file():
-                    shutil.copy2(source, output / ("PFFFT-" + source.name if source.suffix in {".txt", ".md", ".json"} else source.name))
-            # Generated SDK projects compile these C files directly, including on
-            # Windows. Configure static linkage in the exported header so they
-            # do not depend on caller-supplied DLL import/export definitions.
-            header = output / "pffft.h"
-            header.write_text("/* heavyverb export: PFFFT is linked statically. */\n"
-                "#ifndef PFFFT_STATIC_DEFINE\n#define PFFFT_STATIC_DEFINE\n#endif\n" + header.read_text())
-            shutil.copytree(vendor / "simd", output / "simd", dirs_exist_ok=True)
             shutil.copy2(ROOT / "LICENSE", output / "HEAVYVERB-LICENSE.txt")
         return result
     ir2c.compile = classmethod(compile_with_header)
@@ -128,6 +123,14 @@ def main():
     register()
     from hvcc.compiler import compile_dataflow
     args.output.mkdir(parents=True, exist_ok=True)
+    # Clean obsolete generated FFT files when reusing an older export directory.
+    obsolete = {"heavyverb_pffft.hpp", "pffft.c", "pffft_common.c", "pffft.h",
+                "pffft_priv_impl.h", "PFFFT-LICENSE.txt", "PFFFT-UPSTREAM.md", "PFFFT-manifest.json",
+                "pf_altivec_float.h", "pf_float.h", "pf_fma_x86.h", "pf_neon_float.h",
+                "pf_scalar_float.h", "pf_sse1_float.h", "pf_wasm_float.h"}
+    for path in args.output.rglob("*"):
+        if path.is_file() and path.name in obsolete:
+            path.unlink()
     meta = args.output / "metadata.json"
     meta.write_text(json.dumps({"nosimd": True, "dpf": {"plugin_formats": ["clap", "vst3"], "plugin_uri": "https://github.com/ianshores/heavyverb", "plugin_clap_id": "org.heavyverb.demo"}}))
     results = compile_dataflow(in_path=args.patch.resolve(), out_dir=args.output.resolve(),
@@ -147,7 +150,7 @@ def main():
     makefile = args.output / "plugin/source/Makefile"
     if "dpf" in args.generators and not failed and makefile.exists():
         with makefile.open("a") as stream:
-            stream.write("\n# heavyverb requires C++17\nBUILD_CXX_FLAGS += -std=c++17 -DPFFFT_STATIC_DEFINE\nBUILD_C_FLAGS += -DPFFFT_STATIC_DEFINE\n")
+            stream.write("\n# heavyverb requires C++17\nBUILD_CXX_FLAGS += -std=c++17\n")
     print("Convolution CPU is excluded from hvcc static estimates; run the benchmark.")
     return int(failed)
 

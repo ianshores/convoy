@@ -1,0 +1,5 @@
+mode,callback,channels,sample_rate,ir_seconds,cpu_percent,p99_us,max_us,deadline_us,misses
+off,64,2,48000,4,0.29912245,103.198,516.516,1333.33333,0
+automate_every_second,64,2,48000,4,0.512118127,270.989,492.404,1333.33333,0
+off,256,2,48000,4,0.300910967,108.761,460.716,5333.33333,0
+automate_every_second,256,2,48000,4,0.51074015,418.459,447.075,5333.33333,0

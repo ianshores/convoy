@@ -1,0 +1,1 @@
+PASS: C malloc/calloc/realloc interception found zero audio processing/reset allocations

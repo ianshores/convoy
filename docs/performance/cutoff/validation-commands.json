@@ -1,0 +1,141 @@
+[
+  {
+    "command": [
+      "make",
+      "-j2",
+      "test",
+      "build/heavyverb_quality",
+      "pd",
+      "PD_INCLUDE_DIR=/home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/src"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/heavyverb_quality"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/ian/dev/code/pd-patches/.toolchain/venv/bin/python",
+      "tests/export.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/ian/dev/code/pd-patches/.toolchain/venv/bin/python",
+      "tests/pd.py",
+      "/home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/bin/pd"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/tools-venv/bin/cmake",
+      "-S",
+      ".",
+      "-B",
+      "build-cmake-sole",
+      "-DCMAKE_BUILD_TYPE=Release"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/tools-venv/bin/cmake",
+      "--build",
+      "build-cmake-sole",
+      "-j2"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/tools-venv/bin/ctest",
+      "--test-dir",
+      "build-cmake-sole",
+      "--output-on-failure"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O1",
+      "-g",
+      "-std=c++17",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-Iinclude",
+      "tests/cutoff.cpp",
+      "-o",
+      "build/cutoff-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/cutoff-sanitized"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O3",
+      "-std=c++17",
+      "-DHEAVYVERB_FFT_SCALAR",
+      "-Iinclude",
+      "tests/cutoff.cpp",
+      "-o",
+      "build/cutoff-scalar"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/cutoff-scalar"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O3",
+      "-std=c++17",
+      "-DHEAVYVERB_DISABLE_AVX",
+      "-Iinclude",
+      "tests/cutoff.cpp",
+      "-o",
+      "build/cutoff-sse"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/cutoff-sse"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "c++",
+      "-O3",
+      "-std=c++17",
+      "-DHEAVYVERB_UNIFORM_PARTITIONS",
+      "-Iinclude",
+      "tests/cutoff.cpp",
+      "-o",
+      "build/cutoff-uniform"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "build/cutoff-uniform"
+    ],
+    "exit_code": 0
+  }
+]

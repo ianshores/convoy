@@ -1,0 +1,682 @@
+{
+  "cutoff": {
+    "52.115338,full": {
+      "cpu_median": 0.148946043,
+      "cpu_min": 0.142151087,
+      "cpu_max": 0.15284866,
+      "runs": 7,
+      "sample": {
+        "decay_db": "52.115338",
+        "policy": "full",
+        "retained_samples": "192000",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.142151087",
+        "residual_peak_dbfs": "-inf",
+        "residual_rms_dbfs": "-inf",
+        "tail_l1_bound": "0"
+      }
+    },
+    "52.115338,floor_coefficients": {
+      "cpu_median": 0.148663467,
+      "cpu_min": 0.141632147,
+      "cpu_max": 0.158060933,
+      "runs": 7,
+      "sample": {
+        "decay_db": "52.115338",
+        "policy": "floor_coefficients",
+        "retained_samples": "192000",
+        "zeroed_samples": "2047",
+        "cpu_percent": "0.141632147",
+        "residual_peak_dbfs": "-78.0671308",
+        "residual_rms_dbfs": "-98.3757111",
+        "tail_l1_bound": "0.016312284"
+      }
+    },
+    "52.115338,trim_peak_tail": {
+      "cpu_median": 0.14868238,
+      "cpu_min": 0.140845283,
+      "cpu_max": 0.157408043,
+      "runs": 7,
+      "sample": {
+        "decay_db": "52.115338",
+        "policy": "trim_peak_tail",
+        "retained_samples": "192000",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.140845283",
+        "residual_peak_dbfs": "-inf",
+        "residual_rms_dbfs": "-inf",
+        "tail_l1_bound": "0"
+      }
+    },
+    "52.115338,trim_l1_tail": {
+      "cpu_median": 0.148372167,
+      "cpu_min": 0.143226033,
+      "cpu_max": 0.161064963,
+      "runs": 7,
+      "sample": {
+        "decay_db": "52.115338",
+        "policy": "trim_l1_tail",
+        "retained_samples": "192000",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.143226033",
+        "residual_peak_dbfs": "-inf",
+        "residual_rms_dbfs": "-inf",
+        "tail_l1_bound": "0"
+      }
+    },
+    "52.115338,live_partition_cutoff": {
+      "cpu_median": 0.15032343,
+      "cpu_min": 0.142581267,
+      "cpu_max": 0.15991817,
+      "runs": 7,
+      "sample": {
+        "decay_db": "52.115338",
+        "policy": "live_partition_cutoff",
+        "retained_samples": "192000",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.142581267",
+        "residual_peak_dbfs": "-inf",
+        "residual_rms_dbfs": "-inf",
+        "tail_l1_bound": "0"
+      }
+    },
+    "120,full": {
+      "cpu_median": 0.14795345,
+      "cpu_min": 0.14219249,
+      "cpu_max": 0.165443753,
+      "runs": 7,
+      "sample": {
+        "decay_db": "120",
+        "policy": "full",
+        "retained_samples": "192000",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.14219249",
+        "residual_peak_dbfs": "-inf",
+        "residual_rms_dbfs": "-inf",
+        "tail_l1_bound": "0"
+      }
+    },
+    "120,floor_coefficients": {
+      "cpu_median": 0.146851983,
+      "cpu_min": 0.14133435,
+      "cpu_max": 0.155180787,
+      "runs": 7,
+      "sample": {
+        "decay_db": "120",
+        "policy": "floor_coefficients",
+        "retained_samples": "192000",
+        "zeroed_samples": "84423",
+        "cpu_percent": "0.14133435",
+        "residual_peak_dbfs": "-68.4535132",
+        "residual_rms_dbfs": "-88.2837705",
+        "tail_l1_bound": "0.221171278"
+      }
+    },
+    "120,trim_peak_tail": {
+      "cpu_median": 0.10252122,
+      "cpu_min": 0.09689206,
+      "cpu_max": 0.108186157,
+      "runs": 7,
+      "sample": {
+        "decay_db": "120",
+        "policy": "trim_peak_tail",
+        "retained_samples": "121415",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.09689206",
+        "residual_peak_dbfs": "-69.4073898",
+        "residual_rms_dbfs": "-92.9565227",
+        "tail_l1_bound": "0.11127789"
+      }
+    },
+    "120,trim_l1_tail": {
+      "cpu_median": 0.147893723,
+      "cpu_min": 0.142400703,
+      "cpu_max": 0.156671847,
+      "runs": 7,
+      "sample": {
+        "decay_db": "120",
+        "policy": "trim_l1_tail",
+        "retained_samples": "191700",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.142400703",
+        "residual_peak_dbfs": "-124.47805",
+        "residual_rms_dbfs": "-150.477268",
+        "tail_l1_bound": "1.58251907e-05"
+      }
+    },
+    "120,live_partition_cutoff": {
+      "cpu_median": 0.104496347,
+      "cpu_min": 0.0972409567,
+      "cpu_max": 0.120046567,
+      "runs": 7,
+      "sample": {
+        "decay_db": "120",
+        "policy": "live_partition_cutoff",
+        "retained_samples": "122880",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.0985002367",
+        "residual_peak_dbfs": "-70.4942748",
+        "residual_rms_dbfs": "-93.9098126",
+        "tail_l1_bound": "0.0999682756"
+      }
+    },
+    "160,full": {
+      "cpu_median": 0.14785949,
+      "cpu_min": 0.144643673,
+      "cpu_max": 0.171883283,
+      "runs": 7,
+      "sample": {
+        "decay_db": "160",
+        "policy": "full",
+        "retained_samples": "192000",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.146046043",
+        "residual_peak_dbfs": "-inf",
+        "residual_rms_dbfs": "-inf",
+        "tail_l1_bound": "0"
+      }
+    },
+    "160,floor_coefficients": {
+      "cpu_median": 0.147467683,
+      "cpu_min": 0.143754603,
+      "cpu_max": 0.152040043,
+      "runs": 7,
+      "sample": {
+        "decay_db": "160",
+        "policy": "floor_coefficients",
+        "retained_samples": "192000",
+        "zeroed_samples": "111196",
+        "cpu_percent": "0.143754603",
+        "residual_peak_dbfs": "-68.0280789",
+        "residual_rms_dbfs": "-89.5756063",
+        "tail_l1_bound": "0.165011703"
+      }
+    },
+    "160,trim_peak_tail": {
+      "cpu_median": 0.0864705733,
+      "cpu_min": 0.0841114833,
+      "cpu_max": 0.0925657133,
+      "runs": 7,
+      "sample": {
+        "decay_db": "160",
+        "policy": "trim_peak_tail",
+        "retained_samples": "90926",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.0841114833",
+        "residual_peak_dbfs": "-69.9047753",
+        "residual_rms_dbfs": "-94.1031448",
+        "tail_l1_bound": "0.0847306418"
+      }
+    },
+    "160,trim_l1_tail": {
+      "cpu_median": 0.137919203,
+      "cpu_min": 0.13384364,
+      "cpu_max": 0.14215083,
+      "runs": 7,
+      "sample": {
+        "decay_db": "160",
+        "policy": "trim_l1_tail",
+        "retained_samples": "177436",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.13384364",
+        "residual_peak_dbfs": "-142.268322",
+        "residual_rms_dbfs": "-166.494871",
+        "tail_l1_bound": "1.58485183e-05"
+      }
+    },
+    "160,live_partition_cutoff": {
+      "cpu_median": 0.0851175267,
+      "cpu_min": 0.08367841,
+      "cpu_max": 0.0912800567,
+      "runs": 7,
+      "sample": {
+        "decay_db": "160",
+        "policy": "live_partition_cutoff",
+        "retained_samples": "92160",
+        "zeroed_samples": "0",
+        "cpu_percent": "0.0840710767",
+        "residual_peak_dbfs": "-71.0316619",
+        "residual_rms_dbfs": "-95.1279379",
+        "tail_l1_bound": "0.0753715241"
+      }
+    }
+  },
+  "full": {
+    "1,1,64": {
+      "cpu_median": 0.0732648733,
+      "cpu_min": 0.07011541,
+      "cpu_max": 0.0757246667,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.07011541",
+        "p99_us": "17.497",
+        "max_us": "23.709",
+        "deadline_us": "1333.33333",
+        "checksum": "4471.13924"
+      }
+    },
+    "1,1,256": {
+      "cpu_median": 0.07129395,
+      "cpu_min": 0.07010574,
+      "cpu_max": 0.0805300167,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.07146754",
+        "p99_us": "18.912",
+        "max_us": "39.796",
+        "deadline_us": "5333.33333",
+        "checksum": "908.798047"
+      }
+    },
+    "1,2,64": {
+      "cpu_median": 0.14576039,
+      "cpu_min": 0.14366926,
+      "cpu_max": 0.157265623,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.14519187",
+        "p99_us": "35.707",
+        "max_us": "54.921",
+        "deadline_us": "1333.33333",
+        "checksum": "4471.13924"
+      }
+    },
+    "1,2,256": {
+      "cpu_median": 0.140645013,
+      "cpu_min": 0.137702903,
+      "cpu_max": 0.152512673,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.137702903",
+        "p99_us": "35.985",
+        "max_us": "42.096",
+        "deadline_us": "5333.33333",
+        "checksum": "908.798047"
+      }
+    },
+    "4,1,64": {
+      "cpu_median": 0.148046117,
+      "cpu_min": 0.146972787,
+      "cpu_max": 0.15171555,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.146972787",
+        "p99_us": "49.888",
+        "max_us": "59.465",
+        "deadline_us": "1333.33333",
+        "checksum": "6918.87677"
+      }
+    },
+    "4,1,256": {
+      "cpu_median": 0.149382953,
+      "cpu_min": 0.146856013,
+      "cpu_max": 0.158386647,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.149382953",
+        "p99_us": "53.335",
+        "max_us": "58.389",
+        "deadline_us": "5333.33333",
+        "checksum": "1735.71444"
+      }
+    },
+    "4,2,64": {
+      "cpu_median": 0.315654633,
+      "cpu_min": 0.30667296,
+      "cpu_max": 0.350171427,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.30667296",
+        "p99_us": "105.355",
+        "max_us": "138.384",
+        "deadline_us": "1333.33333",
+        "checksum": "6918.87677"
+      }
+    },
+    "4,2,256": {
+      "cpu_median": 0.321755497,
+      "cpu_min": 0.309759983,
+      "cpu_max": 0.33817265,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.309759983",
+        "p99_us": "110.111",
+        "max_us": "558.517",
+        "deadline_us": "5333.33333",
+        "checksum": "1735.71444"
+      }
+    }
+  },
+  "verified": {
+    "1,1,64": {
+      "cpu_median": 0.07338296,
+      "cpu_min": 0.0722221133,
+      "cpu_max": 0.0839060967,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.0839060967",
+        "p99_us": "18.686",
+        "max_us": "74.956",
+        "deadline_us": "1333.33333",
+        "checksum": "4471.13924"
+      }
+    },
+    "1,1,256": {
+      "cpu_median": 0.06936632,
+      "cpu_min": 0.0670706167,
+      "cpu_max": 0.07108742,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.07108742",
+        "p99_us": "19.595",
+        "max_us": "28.063",
+        "deadline_us": "5333.33333",
+        "checksum": "908.798047"
+      }
+    },
+    "1,2,64": {
+      "cpu_median": 0.14336253,
+      "cpu_min": 0.140630763,
+      "cpu_max": 0.146525343,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.140630763",
+        "p99_us": "34.196",
+        "max_us": "54.044",
+        "deadline_us": "1333.33333",
+        "checksum": "4471.13924"
+      }
+    },
+    "1,2,256": {
+      "cpu_median": 0.14169263,
+      "cpu_min": 0.13799352,
+      "cpu_max": 0.14601404,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.13799352",
+        "p99_us": "38.323",
+        "max_us": "53.017",
+        "deadline_us": "5333.33333",
+        "checksum": "908.798047"
+      }
+    },
+    "4,1,64": {
+      "cpu_median": 0.149373943,
+      "cpu_min": 0.145735647,
+      "cpu_max": 0.155963367,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.145735647",
+        "p99_us": "49.555",
+        "max_us": "66.586",
+        "deadline_us": "1333.33333",
+        "checksum": "6918.87677"
+      }
+    },
+    "4,1,256": {
+      "cpu_median": 0.15497178,
+      "cpu_min": 0.147186407,
+      "cpu_max": 0.162123013,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.162123013",
+        "p99_us": "52.888",
+        "max_us": "60.745",
+        "deadline_us": "5333.33333",
+        "checksum": "1735.71444"
+      }
+    },
+    "4,2,64": {
+      "cpu_median": 0.32098302,
+      "cpu_min": 0.3121989,
+      "cpu_max": 0.332591373,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.332591373",
+        "p99_us": "106.205",
+        "max_us": "1697.733",
+        "deadline_us": "1333.33333",
+        "checksum": "6918.87677"
+      }
+    },
+    "4,2,256": {
+      "cpu_median": 0.31347322,
+      "cpu_min": 0.310214813,
+      "cpu_max": 0.337299623,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.31281823",
+        "p99_us": "113.832",
+        "max_us": "509.576",
+        "deadline_us": "5333.33333",
+        "checksum": "1735.71444"
+      }
+    }
+  },
+  "pffft-avx": {
+    "1,1,64": {
+      "cpu_median": 0.0762284,
+      "cpu_min": 0.0743334533,
+      "cpu_max": 0.0807995833,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.0743334533",
+        "p99_us": "18.235",
+        "max_us": "427.413",
+        "deadline_us": "1333.33333",
+        "checksum": "4471.1393"
+      }
+    },
+    "1,1,256": {
+      "cpu_median": 0.07408072,
+      "cpu_min": 0.07313927,
+      "cpu_max": 0.0777572567,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.0734523267",
+        "p99_us": "21.361",
+        "max_us": "28.721",
+        "deadline_us": "5333.33333",
+        "checksum": "908.79807"
+      }
+    },
+    "1,2,64": {
+      "cpu_median": 0.151062297,
+      "cpu_min": 0.147936793,
+      "cpu_max": 0.157698453,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.147936793",
+        "p99_us": "36.853",
+        "max_us": "61.879",
+        "deadline_us": "1333.33333",
+        "checksum": "4471.1393"
+      }
+    },
+    "1,2,256": {
+      "cpu_median": 0.150192587,
+      "cpu_min": 0.146751363,
+      "cpu_max": 0.15272463,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "1",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.14777362",
+        "p99_us": "40.62",
+        "max_us": "60.957",
+        "deadline_us": "5333.33333",
+        "checksum": "908.79807"
+      }
+    },
+    "4,1,64": {
+      "cpu_median": 0.17238872,
+      "cpu_min": 0.169663793,
+      "cpu_max": 0.17796536,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.169663793",
+        "p99_us": "59.05",
+        "max_us": "89.494",
+        "deadline_us": "1333.33333",
+        "checksum": "6918.87641"
+      }
+    },
+    "4,1,256": {
+      "cpu_median": 0.174397713,
+      "cpu_min": 0.16872725,
+      "cpu_max": 0.180046697,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "1",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.17039234",
+        "p99_us": "63.026",
+        "max_us": "96.92",
+        "deadline_us": "5333.33333",
+        "checksum": "1735.71456"
+      }
+    },
+    "4,2,64": {
+      "cpu_median": 0.361369563,
+      "cpu_min": 0.353866843,
+      "cpu_max": 0.38056591,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "64",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.353866843",
+        "p99_us": "125.159",
+        "max_us": "187.254",
+        "deadline_us": "1333.33333",
+        "checksum": "6918.87641"
+      }
+    },
+    "4,2,256": {
+      "cpu_median": 0.360754733,
+      "cpu_min": 0.35477774,
+      "cpu_max": 0.37142083,
+      "runs": 7,
+      "sample": {
+        "ir_seconds": "4",
+        "channels": "2",
+        "callback": "256",
+        "sample_rate": "48000",
+        "partition": "256",
+        "cpu_percent": "0.35477774",
+        "p99_us": "132.807",
+        "max_us": "190.219",
+        "deadline_us": "5333.33333",
+        "checksum": "1735.71456"
+      }
+    }
+  }
+}

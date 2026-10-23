@@ -1,5 +1,9 @@
 # Current performance
 
+The custom FFT is the sole production backend. The [cutoff report](CUTOFF_REPORT.md)
+records optional tail trimming and a fresh full-quality comparison after adding
+the plugin control.
+
 See the [third-round report](FFT_ROUND3_REPORT.md) for the current custom engine,
 full CPU/compiler details, all optimization deltas, and validation. On Intel Core
 Ultra 9 185H, its AVX path uses 0.1495% mono / 0.3165% two channels for the

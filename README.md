@@ -2,8 +2,8 @@
 
 An MIT-licensed partitioned convolution engine, a `heavyverb~` Pd external,
 and an experimental Heavy compiler adapter. The same engine runs inside Pd
-and inside exported graphs. The default FFT backend is a pinned, vendored
-single-precision PFFFT C library. This is a working first prototype.
+and inside exported graphs. The engine uses its own MIT-licensed FFT with optional runtime AVX acceleration
+and SSE/scalar fallbacks. The convolution core has no FFT library dependency.
 
 The FFT splits long impulse responses into smaller blocks. Processing uses no
 allocations, locks, or file access. Each object is mono; use two for independent
@@ -61,16 +61,36 @@ at revision `4238e1c7f0351bbe488d79f0899c540543ac7583`:
 .venv/bin/python tools/build_plugins.py examples/effect.pd build/effect --dpf /path/to/DPF
 ```
 
-Add `--fft custom` to build with the optimized dependency-free FFT instead;
-use a separate output such as `build/effect-custom`. This excludes PFFFT objects
-from the custom CLAP/VST3 build. The default is PFFFT.
-
 The plugins are written to `build/effect/bin`. The wet latency is currently
 not reported to the DAW for automatic compensation. Generated Wwise source
 is also produced, but this repository has not yet built or tested that source
 against a Wwise SDK. Unreal Submix and MetaSound integration remains to be
 connected to the existing wrapper pipeline and tested. Those integrations
 are not ready for review yet.
+
+## Optional IR tail cutoff
+
+The effect plugin exposes **IR Tail Cutoff dB**. **0 = off (default)** preserves
+the full IR; negative values set an absolute coefficient threshold, with -144dB
+as the lower limit. Try -96dB when auditioning. In Pd, send the number to the
+second inlet of `heavyverb~`; in C++, use `set_tail_cutoff_db()` on the audio thread.
+Export a control receiver connected to that inlet, as in `examples/effect.pd`,
+to expose the parameter in generated plugins.
+
+The control skips trailing whole partitions, preserving any later coefficient
+at or above the threshold. It fades partition gains over eight block updates,
+keeps the full stored IR/history, and restores the full response when set to 0.
+The current demo has strong late reflections, so -96dB preserves its full length.
+
+This is a quality/performance choice. A -96dB coefficient cutoff does **not**
+guarantee a -96dBFS output difference: small contributions add together. On the
+Intel Core Ultra 9 185H at 48kHz, mono, 256-sample callbacks/latency and 256/2048
+partitions, seven trials of four-second synthetic IRs measured approximately
+29% and 42% CPU reductions for rapidly decaying tails, and none for a slower
+decay. Peak output differences were around -70dBFS for the tested noise input.
+Rapid automation temporarily increases CPU while gains fade; stable settings
+provide the savings. See the [cutoff report](CUTOFF_REPORT.md) for conditions,
+raw results, alternatives and validation.
 
 ## Checks
 
@@ -106,7 +126,7 @@ x86 builds. SSE and scalar fallbacks preserve compatibility. Define
 `HEAVYVERB_DISABLE_AVX` (or the matching CMake option) to force the fallback.
 These performance results describe the AVX path on this CPU, not other devices.
 
-The complete IR and requested wet latency are preserved. Full-tail comparisons
+With cutoff off, the complete IR and requested wet latency are preserved. Full-tail comparisons
 against double precision at 44.1/48/96kHz give 131.94–134.97dB residual SNR.
 General, half-input, and packed FFT tests cover AVX, SSE, and scalar paths.
 No allocations occur during processing/reset. Timing stress tests can still
@@ -114,15 +134,16 @@ miss deadlines; average CPU is not a realtime guarantee.
 
 Read the [third optimization report](FFT_ROUND3_REPORT.md) for every experiment,
 rejected variants, quality checks, and the PFFFT comparison. [Raw records](docs/performance/fft-round3/README.md)
-include exact source snapshots and benchmark metadata.
+include exact source snapshots and benchmark metadata. The [follow-up comparison](CUTOFF_REPORT.md)
+confirms the current cutoff-off build still leads the AVX-targeted control on all
+eight workloads.
 [PERFORMANCE.md](PERFORMANCE.md) links historical rounds.
 
 Long IRs use small blocks for early reflections and eight-times-larger tail
 blocks, capped at 8192 samples. At the default setting the first 2048 IR samples
 use 256-sample blocks and the rest use 2048-sample blocks. Uniform scheduling is
 available through `HEAVYVERB_UNIFORM_PARTITIONS` or its matching CMake option.
-The custom backend is selected with `HEAVYVERB_PORTABLE_FFT`, or CMake's
-`-DHEAVYVERB_PORTABLE_FFT=ON`.
+The custom FFT is the sole backend.
 
 CMake is also supplied for core tests and optional external builds:
 `cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release` then
@@ -130,10 +151,7 @@ CMake is also supplied for core tests and optional external builds:
 
 ## License
 
-Original heavyverb code is under [MIT](LICENSE). The vendored PFFFT subset
-retains its [upstream license](third_party/pffft/LICENSE.txt), provenance, and
-source hashes. Export copies that license along with the C sources and SIMD
-headers. hvcc, its generated runtime, DPF, Pd headers, and SDK wrappers retain
+Original heavyverb code and its FFT are under [MIT](LICENSE). hvcc, its generated runtime, DPF, Pd headers, and SDK wrappers retain
 their own notices and terms. Keep those notices when distributing an
 exported plugin. See [DEVELOPMENT.md](DEVELOPMENT.md) for the first-run debrief.
 

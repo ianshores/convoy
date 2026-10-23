@@ -18,7 +18,7 @@ production packed mixer.
 and `runtime/` hold numerical, integration, sanitizer, allocation, callback and
 stress evidence. Plugin binary hashes describe local builds, not uploaded binaries.
 
-Use the verification commit linked in the final repository history to reproduce
+Use verification commit `69f7962` to reproduce
 PFFFT comparisons. Later commits remove that dependency. From that commit:
 
 ```sh

@@ -1,0 +1,19 @@
+{
+  "core_headers": {
+    "include/heavyverb.hpp": "fb3f5c714f9067b407a8f0b839ce93f0d70b2b4b21fd3cb01291e0f8b2e4a6d4",
+    "include/heavyverb_fft.hpp": "a2adefc9d84a160460f9319050b0948a42aa339efda98e613d2a5fd9068624f7",
+    "include/heavyverb_portable.hpp": "cccef1fe1f3bf9091c000f725c7ba7c630785042f9413befe2ad05ea01662156"
+  },
+  "plugins": {
+    "build/effect-cutoff/bin/HeavyVerbDemo.clap": "7e2177a9ab7cbcee7b561101f60d7a0452239f8c309af8df53eee38e0147052e",
+    "build/effect-cutoff/bin/HeavyVerbDemo.vst3/Contents/x86_64-linux/HeavyVerbDemo.so": "6d5ce7dd0c0705c679b7a463a4466dd9d03334a4ef0a8db0c9687af5e57b8e94"
+  },
+  "checks": {
+    "custom_fft_symbols": true,
+    "pffft_symbols": false,
+    "vendored_pffft_directory": false,
+    "clap_headless_control": "passed",
+    "vst3": "built; separate host render not performed"
+  },
+  "note": "Final source differs from benchmark/plugin snapshot only by retained_samples API padding comment."
+}

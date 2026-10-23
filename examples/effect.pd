@@ -36,6 +36,10 @@
 #X coords 0 1 8 -1 200 100 1 0 0;
 #X restore 430 40 graph;
 #X text 30 300 Stereo wet-only convolution reverb. Fixed 48kHz IR. 256 sample wet latency.;
+#X obj 420 180 r IR_Tail_Cutoff_dB @hv_param -144 0 0;
+#X text 420 220 0 = full IR. Negative values trim quiet tail partitions.;
+#X connect 10 0 2 1;
+#X connect 10 0 5 1;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;

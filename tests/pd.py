@@ -9,6 +9,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument("pd", help="Path to the Pure Data executable")
+parser.add_argument("--cutoff", action="store_true", help="Check the native cutoff inlet")
 parser.add_argument("--external-dir", type=Path, default=ROOT / "build")
 args = parser.parse_args()
 build = ROOT / "build/pd-test"
@@ -60,6 +61,11 @@ patch = r"""#N canvas 0 0 600 500 10;
 #X connect 9 0 10 0;
 #X connect 11 0 12 0;
 """
+if args.cutoff:
+    # Two saved arrays occupy top-level indices 15 and 16. Apply the control
+    # before processing, and allow all eight tail blocks to settle before impulse.
+    patch = patch.replace("#X connect 0 0 1 0;", "#X msg 520 330 -1;\n#X connect 0 0 17 0;\n#X connect 17 0 7 1;\n#X connect 0 0 1 0;")
+    patch = patch.replace("delay 10;", "delay 200;").replace("delay 20;", "delay 210;").replace("delay 100;", "delay 300;").replace("delay 150;", "delay 350;")
 (build / "test.pd").write_text(patch)
 result = subprocess.run([args.pd, "-nogui", "-batch", "-noaudio", "-r", "48000", "-path", str(args.external_dir.resolve()), str(build / "test.pd")], cwd=build, capture_output=True, text=True, timeout=20)
 assert result.returncode == 0, result.stderr
@@ -78,7 +84,8 @@ expected = [0.] * len(wet)
 # Include coefficients on both sides of the 512-sample early/tail split.
 taps = {0:1, 1:.5, 3:-.25, 4:.125, 7:.0625, 511:.25, 512:-.125,
         513:.0625, 1023:-.125, 1024:.0625, 1596:.03125}
-for j, h in taps.items(): expected[first + 64 + j] = dry[first] * h
+for j, h in taps.items():
+    if not args.cutoff or j < 1024: expected[first + 64 + j] = dry[first] * h
 error = max(abs(a-b) for a,b in zip(wet,expected))
 assert abs(dry[first]) > 0.1 and error < 1e-6, error
-print(f"PASS: native Pd external rendered matching early and late response; error {error:.3g}")
+print(f"PASS: native Pd external rendered matching {"cutoff" if args.cutoff else "full"} response; error {error:.3g}")

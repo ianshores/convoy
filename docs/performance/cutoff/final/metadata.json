@@ -1,0 +1,350 @@
+{
+  "cpu": "Intel(R) Core(TM) Ultra 9 185H",
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+  "logical_cpu": 1,
+  "runs": 7,
+  "audio_seconds": 30,
+  "priority": "ordinary",
+  "commands": [
+    [
+      "c++",
+      "-O3",
+      "-std=c++17",
+      "-I/home/ian/dev/code/heavyverb/include",
+      "/home/ian/dev/code/heavyverb/tests/cutoff_benchmark.cpp",
+      "-o",
+      "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff"
+    ],
+    [
+      "c++",
+      "-O3",
+      "-std=c++17",
+      "-I/home/ian/dev/code/heavyverb/include",
+      "/home/ian/dev/code/heavyverb/tests/benchmark.cpp",
+      "-o",
+      "/home/ian/dev/code/heavyverb/build/cutoff-final/full"
+    ]
+  ],
+  "sha256": {
+    "/home/ian/dev/code/heavyverb/build/cutoff-final/full": "e6d8c2541c630c567114a564f10e9845a9a7467264bb1a387bab4dc6cfe8bd14",
+    "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark": "5a93073a33e7fecd9d8fb799ddef9a012e7a968c1423b595ecbd726d2e3f40b3",
+    "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark": "d876c3369c09c8c982eccc5a249a22ae91592cd13fa8666462d1bf90987184ad",
+    "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff": "29f2ba5585123f30e63ae966d5d0dfa8a7a8f8c2dca70f491ff809af3ac439c9",
+    "/home/ian/dev/code/heavyverb/include/heavyverb.hpp": "fb3f5c714f9067b407a8f0b839ce93f0d70b2b4b21fd3cb01291e0f8b2e4a6d4",
+    "/home/ian/dev/code/heavyverb/include/heavyverb_fft.hpp": "a2adefc9d84a160460f9319050b0948a42aa339efda98e613d2a5fd9068624f7",
+    "/home/ian/dev/code/heavyverb/include/heavyverb_portable.hpp": "e0f3b8453da4eb15988bbabff10fed3ea9eda59af6b4786e840224a2ea7fbf3f",
+    "/home/ian/dev/code/heavyverb/tests/cutoff_benchmark.cpp": "c7320432337431d387cf10987e9e523b7da0cbe5ea147d6e2dcef2283d31b0b0",
+    "/home/ian/dev/code/heavyverb/tests/benchmark.cpp": "099b39ae9b4c34efc52d857ca81435e53f3e577a23ee4256e6587d118ec104a0"
+  },
+  "schedule": [
+    {
+      "run": 0,
+      "label": "cutoff",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff",
+        "0"
+      ]
+    },
+    {
+      "run": 0,
+      "label": "full",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/full",
+        "0"
+      ]
+    },
+    {
+      "run": 0,
+      "label": "verified",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark",
+        "0"
+      ]
+    },
+    {
+      "run": 0,
+      "label": "pffft-avx",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark",
+        "0"
+      ]
+    },
+    {
+      "run": 1,
+      "label": "verified",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark",
+        "1"
+      ]
+    },
+    {
+      "run": 1,
+      "label": "full",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/full",
+        "1"
+      ]
+    },
+    {
+      "run": 1,
+      "label": "cutoff",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff",
+        "1"
+      ]
+    },
+    {
+      "run": 1,
+      "label": "pffft-avx",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark",
+        "1"
+      ]
+    },
+    {
+      "run": 2,
+      "label": "pffft-avx",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark",
+        "2"
+      ]
+    },
+    {
+      "run": 2,
+      "label": "full",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/full",
+        "2"
+      ]
+    },
+    {
+      "run": 2,
+      "label": "cutoff",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff",
+        "2"
+      ]
+    },
+    {
+      "run": 2,
+      "label": "verified",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark",
+        "2"
+      ]
+    },
+    {
+      "run": 3,
+      "label": "cutoff",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff",
+        "3"
+      ]
+    },
+    {
+      "run": 3,
+      "label": "pffft-avx",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark",
+        "3"
+      ]
+    },
+    {
+      "run": 3,
+      "label": "full",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/full",
+        "3"
+      ]
+    },
+    {
+      "run": 3,
+      "label": "verified",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark",
+        "3"
+      ]
+    },
+    {
+      "run": 4,
+      "label": "cutoff",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff",
+        "4"
+      ]
+    },
+    {
+      "run": 4,
+      "label": "verified",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark",
+        "4"
+      ]
+    },
+    {
+      "run": 4,
+      "label": "full",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/full",
+        "4"
+      ]
+    },
+    {
+      "run": 4,
+      "label": "pffft-avx",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark",
+        "4"
+      ]
+    },
+    {
+      "run": 5,
+      "label": "pffft-avx",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark",
+        "5"
+      ]
+    },
+    {
+      "run": 5,
+      "label": "full",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/full",
+        "5"
+      ]
+    },
+    {
+      "run": 5,
+      "label": "verified",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark",
+        "5"
+      ]
+    },
+    {
+      "run": 5,
+      "label": "cutoff",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff",
+        "5"
+      ]
+    },
+    {
+      "run": 6,
+      "label": "full",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/full",
+        "6"
+      ]
+    },
+    {
+      "run": 6,
+      "label": "verified",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-14-avx-butterflies/benchmark",
+        "6"
+      ]
+    },
+    {
+      "run": 6,
+      "label": "cutoff",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/cutoff-final/cutoff",
+        "6"
+      ]
+    },
+    {
+      "run": 6,
+      "label": "pffft-avx",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ian/dev/code/heavyverb/build/fft-optimization/r3-12-pffft-avx/benchmark",
+        "6"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+Convolution CPU is excluded from hvcc static estimates; run the benchmark.
+make: Entering directory '/home/ian/dev/code/heavyverb/build/effect-cutoff/plugin/source'
+rm -rf ../../build
+rm -rf ../../bin/HeavyVerbDemo
+rm -rf ../../bin/HeavyVerbDemo-*
+rm -rf ../../bin/HeavyVerbDemo.clap
+rm -rf ../../bin/HeavyVerbDemo.component
+rm -rf ../../bin/HeavyVerbDemo.lv2
+rm -rf ../../bin/HeavyVerbDemo.vst
+rm -rf ../../bin/HeavyVerbDemo.vst3
+make: Leaving directory '/home/ian/dev/code/heavyverb/build/effect-cutoff/plugin/source'
+make: Entering directory '/home/ian/dev/code/heavyverb/build/effect-cutoff/plugin/source'
+Compiling HeavyContext.cpp
+Compiling HeavyDPF_HeavyVerbDemo.cpp
+Compiling Heavy_HeavyVerbDemo.cpp
+Compiling HvHeavy.cpp
+Compiling HvLightPipe.c
+Compiling HvMessage.c
+In file included from HvMessage.h:20,
+                 from HvMessage.c:17:
+HvMessage.c: In function ‘msg_copyToBuffer’:
+HvUtils.h:134:38: warning: ‘strncpy’ specified bound depends on the length of the source argument [-Wstringop-truncation]
+  134 | #define hv_strncpy(_dst, _src, _len) strncpy(_dst, _src, _len)
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+HvMessage.c:74:7: note: in expansion of macro ‘hv_strncpy’
+   74 |       hv_strncpy(p, msg_getSymbol(m,i), symLen);
+      |       ^~~~~~~~~~
+HvUtils.h:128:22: note: length computed here
+  128 | #define hv_strlen(a) strlen(a)
+      |                      ^~~~~~~~~
+HvMessage.c:72:44: note: in expansion of macro ‘hv_strlen’
+   72 |       const hv_size_t symLen = (hv_size_t) hv_strlen(msg_getSymbol(m,i)) + 1; // include the trailing null char
+      |                                            ^~~~~~~~~
+Compiling HvMessagePool.c
+Compiling HvMessageQueue.c
+Compiling HvSignalVar.c
+Compiling HvTable.c
+Compiling HvUtils.c
+HvUtils.c: In function ‘hv_string_to_hash’:
+HvUtils.c:45:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   45 |     case 3: x ^= (str[2] << 16);
+      |             ~~^~~~~~~~~~~~~~~~~
+HvUtils.c:46:5: note: here
+   46 |     case 2: x ^= (str[1] << 8);
+      |     ^~~~
+HvUtils.c:46:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   46 |     case 2: x ^= (str[1] << 8);
+      |             ~~^~~~~~~~~~~~~~~~
+HvUtils.c:47:5: note: here
+   47 |     case 1: x ^= str[0]; x *= n;
+      |     ^~~~
+Compiling DistrhoPluginMain.cpp (CLAP)
+Compiling DistrhoPluginMain.cpp (VST3)
+Creating CLAP plugin for HeavyVerbDemo
+Creating VST3 plugin for HeavyVerbDemo
+make: Leaving directory '/home/ian/dev/code/heavyverb/build/effect-cutoff/plugin/source'
+Built plugins in /home/ian/dev/code/heavyverb/build/effect-cutoff/bin

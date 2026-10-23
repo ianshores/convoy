@@ -115,7 +115,8 @@ this round does not change FTZ/DAZ. Standard four-second mono owned storage is
 
 No Cradle, Unreal, Wwise, console, or mobile measurements were made. GNU/Clang
 x86 AVX support is runtime optional; MSVC and other architectures use fallback
-code. Default selection and dependency removal are a separate follow-up change.
+code. The [follow-up](CUTOFF_REPORT.md) documents the custom-only default, dependency
+removal, and optional tail control after this round was verified and pushed.
 
 [Recommendations](FFT_ROUND3_RECOMMENDATIONS.md) ·
 [Raw logs and reproduction](docs/performance/fft-round3/README.md)

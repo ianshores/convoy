@@ -10,6 +10,7 @@ struct Object {
     t_float signal;
     t_symbol* table;
     int partition;
+    t_float cutoff;
     heavyverb::Convolver* engine;
 };
 static void reload(Object* x) {
@@ -31,7 +32,7 @@ static t_int* perform(t_int* w) {
     auto x = reinterpret_cast<Object*>(w[1]);
     auto in = reinterpret_cast<t_sample*>(w[2]), out = reinterpret_cast<t_sample*>(w[3]);
     auto n = static_cast<int>(w[4]);
-    if (x->engine) x->engine->process(in, out, n);
+    if (x->engine) { x->engine->set_tail_cutoff_db(x->cutoff); x->engine->process(in, out, n); }
     else std::fill(out, out + n, 0.f);
     return w + 5;
 }
@@ -46,6 +47,7 @@ static void* create(t_symbol* table, t_floatarg partition) {
     }
     auto x = reinterpret_cast<Object*>(pd_new(klass));
     x->table = table; x->partition = partition == 0 ? 256 : static_cast<int>(partition);
+    x->cutoff = 0; floatinlet_new(&x->object, &x->cutoff);
     x->engine = nullptr; outlet_new(&x->object, &s_signal);
     return x;
 }

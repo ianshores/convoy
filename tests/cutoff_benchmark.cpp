@@ -17,21 +17,25 @@ int main(int argc, char **argv) {
         std::vector<float> signal(length+8192+256,0), reference(signal.size()), rendered(signal.size());
         for(int i=0;i<8192;++i) signal[i]=.25f*noise(rng);
         heavyverb::Convolver original(full.data(),full.size()); original.process(signal.data(),reference.data(),signal.size());
-        for(int step=0;step<4;++step) {
-            const int policy=(step+trial)%4; auto ir=full; int zeroed=0;
-            const char* names[]={"full","floor_coefficients","trim_peak_tail","trim_l1_tail"};
+        for(int step=0;step<5;++step) {
+            const int policy=(step+trial)%5; auto ir=full; int zeroed=0;
+            const char* names[]={"full","floor_coefficients","trim_peak_tail","trim_l1_tail","live_partition_cutoff"};
             if(policy==1) for(auto &v:ir) if(std::abs(v)<threshold) {v=0; ++zeroed;}
             if(policy==2) while(ir.size()>1 && std::abs(ir.back())<threshold) ir.pop_back();
             if(policy==3) { double sum=0; while(ir.size()>1 && sum+std::abs(ir.back())<=threshold) {sum+=std::abs(ir.back());ir.pop_back();} }
             double bound=0; for(std::size_t i=0;i<full.size();++i) bound+=std::abs(double(full[i])-(i<ir.size()?ir[i]:0));
-            heavyverb::Convolver engine(ir.data(),ir.size()); engine.process(signal.data(),rendered.data(),signal.size());
+            heavyverb::Convolver engine(ir.data(),ir.size());
+            if(policy==4) {engine.set_tail_cutoff_db(-96.f); engine.reset();
+                for(std::size_t i=engine.retained_samples();i<full.size();++i)bound+=std::abs(full[i]);
+            }
+            engine.process(signal.data(),rendered.data(),signal.size());
             double peak=0,squared=0; for(std::size_t i=0;i<signal.size();++i) {double e=double(rendered[i])-reference[i];peak=std::max(peak,std::abs(e));squared+=e*e;}
             std::vector<float> in(block),out(block); for(auto&v:in)v=.1f*noise(rng);
             for(int i=0;i<length;i+=block)engine.process(in.data(),out.data(),block);
             const auto start=std::chrono::steady_clock::now();
             for(int i=0;i<30*rate;i+=block)engine.process(in.data(),out.data(),block);
             const double cpu=100*std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count()/30.;
-            std::printf("%.8g,%s,%zu,%d,%.9g,%.9g,%.9g,%.9g\n",decay,names[policy],ir.size(),zeroed,cpu,20*std::log10(peak),10*std::log10(squared/signal.size()),bound);
+            std::printf("%.8g,%s,%zu,%d,%.9g,%.9g,%.9g,%.9g\n",decay,names[policy],policy==4?std::min(ir.size(),engine.retained_samples()):ir.size(),zeroed,cpu,20*std::log10(peak),10*std::log10(squared/signal.size()),bound);
         }
     }
 }

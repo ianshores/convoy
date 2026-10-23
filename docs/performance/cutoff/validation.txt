@@ -1,0 +1,140 @@
+$ make -j2 test build/heavyverb_quality pd PD_INCLUDE_DIR=/home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/src
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude tests/cutoff.cpp -o build/heavyverb_cutoff
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_TEST_HALF_FORWARD -Iinclude tests/fft.cpp -o build/heavyverb_fft_half
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8 -Iinclude tests/fft.cpp -o build/heavyverb_fft_packed
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_DISABLE_AVX -Iinclude tests/fft.cpp -o build/heavyverb_fft_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_DISABLE_AVX -DHEAVYVERB_TEST_HALF_FORWARD -Iinclude tests/fft.cpp -o build/heavyverb_fft_half_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_DISABLE_AVX -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8 -Iinclude tests/fft.cpp -o build/heavyverb_fft_packed_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_FFT_SCALAR -DHEAVYVERB_TEST_HALF_FORWARD -Iinclude tests/fft.cpp -o build/heavyverb_fft_half_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_FFT_SCALAR -DHEAVYVERB_TEST_PACKED -DHEAVYVERB_TEST_PACKED8 -Iinclude tests/fft.cpp -o build/heavyverb_fft_packed_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -DHEAVYVERB_DISABLE_AVX -Iinclude tests/core.cpp -o build/heavyverb_test_portable_sse
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -DHEAVYVERB_FFT_SCALAR -Iinclude tests/core.cpp -o build/heavyverb_test_portable_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude tests/core.cpp -o build/heavyverb_test
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -Iinclude tests/core.cpp -o build/heavyverb_test_portable
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude tests/fft.cpp -o build/heavyverb_fft_test
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_FFT_SCALAR -Iinclude tests/fft.cpp -o build/heavyverb_fft_test_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude tests/realtime.cpp -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o build/heavyverb_realtime
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -Iinclude tests/realtime.cpp -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o build/heavyverb_realtime_portable
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude tests/quality.cpp -o build/heavyverb_quality
+g++ -O3 -std=c++17 -Wall -Wextra -shared -fPIC -Iinclude -I"/home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/src" pd/heavyverb_tilde.cpp -o 'build/heavyverb~.pd_linux'
+pd/heavyverb_tilde.cpp: In function ‘void heavyverb_tilde_setup()’:
+pd/heavyverb_tilde.cpp:55:45: warning: cast between incompatible function types from ‘void* (*)(t_symbol*, t_floatarg)’ {aka ‘void* (*)(_symbol*, float)’} to ‘t_newmethod’ {aka ‘void* (*)()’} [-Wcast-function-type]
+   55 |     klass = class_new(gensym("heavyverb~"), reinterpret_cast<t_newmethod>(create),
+      |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./build/heavyverb_cutoff
+PASS: 81 settled cutoff/full-restore cases and direct live transition model; worst error 3.26328919e-08
+./build/heavyverb_test
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+./build/heavyverb_test_portable
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+./build/heavyverb_fft_test
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+./build/heavyverb_fft_test_scalar
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+for check in build/heavyverb_fft_half build/heavyverb_fft_packed build/heavyverb_fft_sse build/heavyverb_fft_half_sse build/heavyverb_fft_packed_sse build/heavyverb_fft_half_scalar build/heavyverb_fft_packed_scalar build/heavyverb_test_portable_sse build/heavyverb_test_portable_scalar; do ./$check || exit $?; done
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 3.8743e-07, worst RMS 1.17563e-07, max sampled spectrum error 0.000634757
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+./build/heavyverb_realtime
+PASS: C malloc/calloc/realloc interception found zero audio processing/reset allocations
+./build/heavyverb_realtime_portable
+PASS: C malloc/calloc/realloc interception found zero audio processing/reset allocations
+$ build/heavyverb_quality
+sample_rate,ir_seconds,signal,max_error,rms_error,snr_db,reference_peak
+44100,4,impulse,2.32830643827e-09,2.07470895652e-10,134.972132,0.00705951732
+44100,4,wideband,8.30093105364e-08,7.06760114302e-09,132.637921,0.350072072
+44100,4,multitone_bursts,3.45309900118e-08,3.07060588629e-09,131.937742,0.101175777
+44100,4,quiet_wideband,7.63930066056e-12,7.17001836969e-13,132.539331,4.04132612e-05
+48000,4,impulse,2.56113708106e-09,1.99268905085e-10,134.970614,0.00677233841
+48000,4,wideband,7.32834041783e-08,6.82379157366e-09,132.600237,0.317915081
+48000,4,multitone_bursts,3.63415798843e-08,3.31029383264e-09,132.611516,0.141388532
+48000,4,quiet_wideband,7.84070433634e-12,6.91817504179e-13,132.568300,3.43533351e-05
+96000,4,impulse,1.86264514923e-09,1.43506768276e-10,134.904142,0.00481065921
+96000,4,wideband,6.6003433663e-08,4.93634077823e-09,132.554672,0.318252896
+96000,4,multitone_bursts,3.29313673136e-08,2.44216374928e-09,132.647248,0.094414068
+96000,4,quiet_wideband,6.55038408904e-12,4.91942671456e-13,132.547186,2.56794889e-05
+$ /home/ian/dev/code/pd-patches/.toolchain/venv/bin/python tests/export.py
+Convolution CPU is excluded from hvcc static estimates; run the benchmark.
+PASS: nine exported cutoff/restore stereo renders via actual parameter receiver
+PASS (custom FFT): 15 stereo exported graph renders, dense 1597-tap IR; max error 7.73e-09; invalid IR/partition rejected
+$ /home/ian/dev/code/pd-patches/.toolchain/venv/bin/python tests/pd.py /home/ian/Documents/Codex/2026-10-20/new-chat/work/pure-data-0.56-2/bin/pd
+PASS: native Pd external rendered matching early and late response; error 2.24e-08
+$ build/tools-venv/bin/cmake -S . -B build-cmake-sole -DCMAKE_BUILD_TYPE=Release
+-- The C compiler identification is GNU 16.2.1
+-- The CXX compiler identification is GNU 16.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ian/dev/code/heavyverb/build-cmake-sole
+$ build/tools-venv/bin/cmake --build build-cmake-sole -j2
+[  6%] Building CXX object CMakeFiles/heavyverb_cutoff.dir/tests/cutoff.cpp.o
+[ 12%] Building CXX object CMakeFiles/heavyverb_test.dir/tests/core.cpp.o
+[ 18%] Linking CXX executable heavyverb_cutoff
+[ 18%] Built target heavyverb_cutoff
+[ 25%] Building CXX object CMakeFiles/heavyverb_fft_test.dir/tests/fft.cpp.o
+[ 31%] Linking CXX executable heavyverb_test
+[ 31%] Built target heavyverb_test
+[ 37%] Building CXX object CMakeFiles/heavyverb_fft_test_scalar.dir/tests/fft.cpp.o
+[ 43%] Linking CXX executable heavyverb_fft_test
+[ 43%] Built target heavyverb_fft_test
+[ 50%] Building CXX object CMakeFiles/heavyverb_fft_half.dir/tests/fft.cpp.o
+[ 56%] Linking CXX executable heavyverb_fft_test_scalar
+[ 56%] Built target heavyverb_fft_test_scalar
+[ 62%] Building CXX object CMakeFiles/heavyverb_fft_packed.dir/tests/fft.cpp.o
+[ 68%] Linking CXX executable heavyverb_fft_half
+[ 68%] Built target heavyverb_fft_half
+[ 75%] Building CXX object CMakeFiles/heavyverb_realtime.dir/tests/realtime.cpp.o
+[ 81%] Linking CXX executable heavyverb_fft_packed
+[ 81%] Built target heavyverb_fft_packed
+[ 87%] Building CXX object CMakeFiles/heavyverb_benchmark.dir/tests/benchmark.cpp.o
+[ 93%] Linking CXX executable heavyverb_realtime
+[ 93%] Built target heavyverb_realtime
+[100%] Linking CXX executable heavyverb_benchmark
+[100%] Built target heavyverb_benchmark
+$ build/tools-venv/bin/ctest --test-dir build-cmake-sole --output-on-failure
+Test project /home/ian/dev/code/heavyverb/build-cmake-sole
+    Start 1: cutoff
+1/7 Test #1: cutoff ...........................   Passed    0.88 sec
+    Start 2: convolution
+2/7 Test #2: convolution ......................   Passed    0.07 sec
+    Start 3: fft
+3/7 Test #3: fft ..............................   Passed    0.04 sec
+    Start 4: fft_scalar
+4/7 Test #4: fft_scalar .......................   Passed    0.04 sec
+    Start 5: fft_half
+5/7 Test #5: fft_half .........................   Passed    0.04 sec
+    Start 6: fft_packed
+6/7 Test #6: fft_packed .......................   Passed    0.04 sec
+    Start 7: realtime
+7/7 Test #7: realtime .........................   Passed    0.01 sec
+
+100% tests passed out of 7
+
+Total Test time (real) =   1.12 sec
+$ c++ -O1 -g -std=c++17 -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude tests/cutoff.cpp -o build/cutoff-sanitized
+$ build/cutoff-sanitized
+PASS: 81 settled cutoff/full-restore cases and direct live transition model; worst error 3.26328919e-08
+$ c++ -O3 -std=c++17 -DHEAVYVERB_FFT_SCALAR -Iinclude tests/cutoff.cpp -o build/cutoff-scalar
+$ build/cutoff-scalar
+PASS: 81 settled cutoff/full-restore cases and direct live transition model; worst error 3.26328919e-08
+$ c++ -O3 -std=c++17 -DHEAVYVERB_DISABLE_AVX -Iinclude tests/cutoff.cpp -o build/cutoff-sse
+$ build/cutoff-sse
+PASS: 81 settled cutoff/full-restore cases and direct live transition model; worst error 3.26328919e-08
+$ c++ -O3 -std=c++17 -DHEAVYVERB_UNIFORM_PARTITIONS -Iinclude tests/cutoff.cpp -o build/cutoff-uniform
+$ build/cutoff-uniform
+PASS: 81 settled cutoff/full-restore cases and direct live transition model; worst error 3.0955352e-08

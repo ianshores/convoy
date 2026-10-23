@@ -37,6 +37,8 @@ def main():
     parser.add_argument("--cxx-flag", action="append", default=[])
     parser.add_argument("--c-flag", action="append", default=[])
     args = parser.parse_args()
+    if args.pffft and not (ROOT / "third_party/pffft").exists():
+        parser.error("PFFFT comparison requires verification commit 69f7962; current builds use the custom FFT")
     if not re.fullmatch(r"[a-zA-Z0-9_-]+", args.label):
         parser.error("label must contain only letters, digits, underscores or hyphens")
     if args.runs < 0 or args.seconds < 1:

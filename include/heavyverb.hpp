@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 Ian Shores
 #pragma once
-#ifdef HEAVYVERB_PORTABLE_FFT
 #include "heavyverb_portable.hpp"
-#else
-#include "heavyverb_pffft.hpp"
-#endif
 #include <vector>
 namespace heavyverb {
 // Two-stage partitioning keeps the requested wet latency for early reflections,
@@ -32,8 +28,17 @@ public:
         head_.reset(new detail::PartitionedConvolver(ir, split ? split : length, b_));
         if (split) tail_.reset(new detail::PartitionedConvolver(ir + split, length - split, split));
     }
+    // Call on the audio thread, serialized with process/reset. The long-IR
+    // early stage stays intact. Only trailing whole partitions are omitted.
+    void set_tail_cutoff_db(float db) noexcept {
+        (tail_ ? tail_.get() : head_.get())->set_tail_cutoff_db(db);
+    }
+    std::size_t retained_samples() const noexcept {
+        return tail_ ? std::min<std::size_t>(8192, b_ * 8) + tail_->retained_samples()
+                     : head_->retained_samples();
+    }
     std::size_t latency() const noexcept { return b_; }
-    // Owned state/buffer bytes; an optional backend's opaque plan is excluded.
+    // Owned state and buffer bytes.
     std::size_t memory_bytes() const noexcept {
         return sizeof(*this) + head_->memory_bytes() + tail_delay_.capacity() * sizeof(float)
             + (tail_ ? tail_->memory_bytes() : 0);

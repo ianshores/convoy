@@ -1,0 +1,1 @@
+PASS: CLAP parameter range/default/automation, stereo render, live cutoff, restoration; changed peak 0.174952954, restore error 0

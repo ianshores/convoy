@@ -12,9 +12,10 @@ jobs:
       - run: pip install -r requirements-export.txt
       - run: make test pd PD_INCLUDE_DIR=/usr/include/pd
       - run: make check-export check-pd PD=/usr/bin/pd
+      - run: python tests/pd.py /usr/bin/pd --cutoff
       - run: cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release -DPD_INCLUDE_DIR=/usr/include/pd
       - run: cmake --build build-cmake && ctest --test-dir build-cmake --output-on-failure
-      - run: cmake -S . -B build-cmake-portable -DCMAKE_BUILD_TYPE=Release -DHEAVYVERB_PORTABLE_FFT=ON
-      - run: cmake --build build-cmake-portable && ctest --test-dir build-cmake-portable --output-on-failure
+      - run: cmake -S . -B build-cmake-sse -DCMAKE_BUILD_TYPE=Release -DHEAVYVERB_DISABLE_AVX=ON
+      - run: cmake --build build-cmake-sse && ctest --test-dir build-cmake-sse --output-on-failure
       - run: cmake -S . -B build-cmake-uniform -DCMAKE_BUILD_TYPE=Release -DHEAVYVERB_UNIFORM_PARTITIONS=ON
       - run: cmake --build build-cmake-uniform && ctest --test-dir build-cmake-uniform --output-on-failure
