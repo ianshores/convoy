@@ -1,0 +1,12 @@
+#N canvas 0 0 450 300 10;
+#X text 20 20 Compiler-only shim - use the native external to listen in PlugData;
+#X text 20 45 @hv_arg \$1 table string "" true;
+#X text 20 65 @hv_arg \$2 partition int 256 false;
+#N canvas 0 0 200 200 @hv_obj 0;
+#X obj 20 20 inlet~;
+#X obj 20 80 outlet~;
+#X restore 20 130 pd @hv_obj __heavyverb~f \$1 \$2;
+#X obj 20 100 inlet~;
+#X obj 20 180 outlet~;
+#X connect 4 0 3 0;
+#X connect 3 0 5 0;

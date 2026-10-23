@@ -1,0 +1,6 @@
+[
+{"callbacks":24000,"channels":1,"callback_samples":64,"deadline_us":1333.333,"max_wall_us":114.335,"thread_cpu_us_at_max_wall":112.231,"max_thread_cpu_us":112.231,"wall_deadline_misses":0},
+{"callbacks":24000,"channels":1,"callback_samples":256,"deadline_us":5333.333,"max_wall_us":504.010,"thread_cpu_us_at_max_wall":62.265,"max_thread_cpu_us":113.686,"wall_deadline_misses":0},
+{"callbacks":24000,"channels":2,"callback_samples":64,"deadline_us":1333.333,"max_wall_us":594.200,"thread_cpu_us_at_max_wall":136.803,"max_thread_cpu_us":194.949,"wall_deadline_misses":0},
+{"callbacks":24000,"channels":2,"callback_samples":256,"deadline_us":5333.333,"max_wall_us":630.159,"thread_cpu_us_at_max_wall":5.468,"max_thread_cpu_us":230.676,"wall_deadline_misses":0}
+]

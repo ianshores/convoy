@@ -1,0 +1,20 @@
+name: Check
+on: [push, pull_request]
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y puredata-core puredata-dev
+      - run: pip install -r requirements-export.txt
+      - run: make test pd PD_INCLUDE_DIR=/usr/include/pd
+      - run: make check-export check-pd PD=/usr/bin/pd
+      - run: cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release -DPD_INCLUDE_DIR=/usr/include/pd
+      - run: cmake --build build-cmake && ctest --test-dir build-cmake --output-on-failure
+      - run: cmake -S . -B build-cmake-portable -DCMAKE_BUILD_TYPE=Release -DHEAVYVERB_PORTABLE_FFT=ON
+      - run: cmake --build build-cmake-portable && ctest --test-dir build-cmake-portable --output-on-failure
+      - run: cmake -S . -B build-cmake-uniform -DCMAKE_BUILD_TYPE=Release -DHEAVYVERB_UNIFORM_PARTITIONS=ON
+      - run: cmake --build build-cmake-uniform && ctest --test-dir build-cmake-uniform --output-on-failure
