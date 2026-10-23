@@ -15,6 +15,7 @@ namespace detail {
 // process/reset never allocate. One instance per channel; B samples of latency.
 class PartitionedConvolver {
     friend struct ConvolverProbe;
+    // Spectrum has B+1 useful bins; zero padding keeps strides a SIMD multiple.
     std::size_t b_, n_, bins_, partitions_, cursor_ = 0, position_ = 0;
     RealFFT fft_;
     std::vector<float> work_, filter_r_, filter_i_, history_r_, history_i_, sum_r_, sum_i_;
@@ -29,6 +30,21 @@ class PartitionedConvolver {
             si[k] += ar[k] * bi[k] + ai[k] * br[k];
         }
     }
+    // Keep each sum in a register for two successive partitions. Addition
+    // order matches the single-partition loop (no reassociation/fast-math).
+    static void accumulate_pair(float *__restrict sr, float *__restrict si,
+                                const float *__restrict ar, const float *__restrict ai,
+                                const float *__restrict br, const float *__restrict bi,
+                                const float *__restrict cr, const float *__restrict ci,
+                                const float *__restrict dr, const float *__restrict di,
+                                std::size_t count) noexcept {
+        for (std::size_t k = 0; k < count; ++k) {
+            const float r = sr[k] + (ar[k] * br[k] - ai[k] * bi[k]);
+            const float i = si[k] + (ar[k] * bi[k] + ai[k] * br[k]);
+            sr[k] = r + (cr[k] * dr[k] - ci[k] * di[k]);
+            si[k] = i + (cr[k] * di[k] + ci[k] * dr[k]);
+        }
+    }
     void block() noexcept {
         std::copy(input_.begin(), input_.end(), work_.begin());
         std::fill(work_.begin() + b_, work_.end(), 0.f);
@@ -36,7 +52,17 @@ class PartitionedConvolver {
                      history_i_.data() + cursor_ * bins_);
         std::fill(sum_r_.begin(), sum_r_.end(), 0.f);
         std::fill(sum_i_.begin(), sum_i_.end(), 0.f);
-        for (std::size_t p = 0; p < partitions_; ++p) {
+        std::size_t p = 0;
+        for (; p + 1 < partitions_; p += 2) {
+            const auto h = p * bins_, next = h + bins_;
+            const auto x = ((cursor_ + partitions_ - p) % partitions_) * bins_;
+            const auto y = ((cursor_ + partitions_ - p - 1) % partitions_) * bins_;
+            accumulate_pair(sum_r_.data(), sum_i_.data(), filter_r_.data() + h,
+                            filter_i_.data() + h, history_r_.data() + x, history_i_.data() + x,
+                            filter_r_.data() + next, filter_i_.data() + next, history_r_.data() + y,
+                            history_i_.data() + y, bins_);
+        }
+        if (p < partitions_) {
             const auto h = p * bins_, x = ((cursor_ + partitions_ - p) % partitions_) * bins_;
             accumulate(sum_r_.data(), sum_i_.data(), filter_r_.data() + h, filter_i_.data() + h,
                        history_r_.data() + x, history_i_.data() + x, bins_);
@@ -64,7 +90,7 @@ class PartitionedConvolver {
         return length;
     }
     PartitionedConvolver(const float *ir, std::size_t length, std::size_t partition = 256)
-        : b_(checked_partition(partition)), n_(b_ * 2), bins_(b_ + 1), partitions_(0), fft_(n_) {
+        : b_(checked_partition(partition)), n_(b_ * 2), bins_(b_ + 4), partitions_(0), fft_(n_) {
         checked_length(ir, length);
         partitions_ = (length + b_ - 1) / b_;
         filter_r_.resize(partitions_ * bins_);

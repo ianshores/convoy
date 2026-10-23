@@ -70,15 +70,11 @@ class RealFFT {
 #endif
             *p = x;
     }
-    template <bool inverse, class T>
-    void butterfly4(std::size_t a, std::size_t q, std::size_t tw) noexcept {
-        T ar = load<T>(&r_[a]), ai = load<T>(&i_[a]);
-        T br = load<T>(&r_[a + q]), bi = load<T>(&i_[a + q]);
-        T cr = load<T>(&r_[a + 2 * q]), ci = load<T>(&i_[a + 2 * q]);
-        T dr = load<T>(&r_[a + 3 * q]), di = load<T>(&i_[a + 3 * q]);
+    template <bool inverse, bool twiddled, class T, class Roots>
+    static void kernel4(T &ar, T &ai, T &br, T &bi, T &cr, T &ci, T &dr, T &di, std::size_t tw,
+                        std::size_t q, Roots root) noexcept {
         auto multiply = [&](T &x, T &y, std::size_t w) {
-            const T wr = load<T>(&radix_r_[w]),
-                    wi = load<T>(&radix_i_[w]) * T(inverse ? -1.f : 1.f);
+            const T wr = root(w, false), wi = root(w, true) * T(inverse ? -1.f : 1.f);
 #ifdef HEAVYVERB_FFT_FMA
             if constexpr (!std::is_same<T, float>::value) {
                 const T re = _mm_fmsub_ps(x.v, wr.v, _mm_mul_ps(y.v, wi.v));
@@ -95,7 +91,7 @@ class RealFFT {
             x = re;
 #endif
         };
-        if constexpr (inverse) {
+        if constexpr (inverse && twiddled) {
             multiply(br, bi, tw);
             multiply(cr, ci, tw + q);
             multiply(dr, di, tw + 2 * q);
@@ -117,11 +113,22 @@ class RealFFT {
             dr = vr - ti;
             di = vi + tr;
         }
-        if constexpr (!inverse) {
+        if constexpr (!inverse && twiddled) {
             multiply(br, bi, tw);
             multiply(cr, ci, tw + q);
             multiply(dr, di, tw + 2 * q);
         }
+    }
+    template <bool inverse, class T>
+    void butterfly4(std::size_t a, std::size_t q, std::size_t tw) noexcept {
+        T ar = load<T>(&r_[a]), ai = load<T>(&i_[a]);
+        T br = load<T>(&r_[a + q]), bi = load<T>(&i_[a + q]);
+        T cr = load<T>(&r_[a + 2 * q]), ci = load<T>(&i_[a + 2 * q]);
+        T dr = load<T>(&r_[a + 3 * q]), di = load<T>(&i_[a + 3 * q]);
+        auto root = [&](std::size_t w, bool imaginary) {
+            return load<T>((imaginary ? radix_i_ : radix_r_).data() + w);
+        };
+        kernel4<inverse, true>(ar, ai, br, bi, cr, ci, dr, di, tw, q, root);
         store(&r_[a], ar);
         store(&i_[a], ai);
         store(&r_[a + q], br);
@@ -131,8 +138,73 @@ class RealFFT {
         store(&r_[a + 3 * q], dr);
         store(&i_[a + 3 * q], di);
     }
+#ifdef HEAVYVERB_FFT_SSE
+    // Small terminal stages vectorize across independent groups. Q=1 uses
+    // four groups, Q=2 uses two. All supported sizes contain complete batches.
+    template <bool inverse, int Q> void terminal_stage(const Stage &stage) noexcept {
+        for (std::size_t base = 0; base < m_; base += 16) {
+            auto read = [&](const std::vector<float> &v, __m128 &a, __m128 &b, __m128 &c,
+                            __m128 &d) {
+                a = _mm_loadu_ps(v.data() + base);
+                b = _mm_loadu_ps(v.data() + base + 4);
+                c = _mm_loadu_ps(v.data() + base + 8);
+                d = _mm_loadu_ps(v.data() + base + 12);
+                if constexpr (Q == 1) {
+                    _MM_TRANSPOSE4_PS(a, b, c, d);
+                } else {
+                    const auto aa = _mm_movelh_ps(a, c), bb = _mm_movehl_ps(c, a);
+                    const auto cc = _mm_movelh_ps(b, d), dd = _mm_movehl_ps(d, b);
+                    a = aa;
+                    b = bb;
+                    c = cc;
+                    d = dd;
+                }
+            };
+            __m128 ar0, br0, cr0, dr0, ai0, bi0, ci0, di0;
+            read(r_, ar0, br0, cr0, dr0);
+            read(i_, ai0, bi0, ci0, di0);
+            Four ar(ar0), br(br0), cr(cr0), dr(dr0), ai(ai0), bi(bi0), ci(ci0), di(di0);
+            auto root = [&](std::size_t w, bool imaginary) -> Four {
+                const auto &v = imaginary ? radix_i_ : radix_r_;
+                if constexpr (Q == 2)
+                    return _mm_set_ps(v[w + 1], v[w], v[w + 1], v[w]);
+                else
+                    return Four(imaginary ? 0.f : 1.f);
+            };
+            kernel4<inverse, Q != 1>(ar, ai, br, bi, cr, ci, dr, di, stage.offset, Q, root);
+            auto write = [&](std::vector<float> &v, __m128 a, __m128 b, __m128 c, __m128 d) {
+                if constexpr (Q == 1) {
+                    _MM_TRANSPOSE4_PS(a, b, c, d);
+                } else {
+                    const auto aa = _mm_movelh_ps(a, b), bb = _mm_movelh_ps(c, d);
+                    const auto cc = _mm_movehl_ps(b, a), dd = _mm_movehl_ps(d, c);
+                    a = aa;
+                    b = bb;
+                    c = cc;
+                    d = dd;
+                }
+                _mm_storeu_ps(v.data() + base, a);
+                _mm_storeu_ps(v.data() + base + 4, b);
+                _mm_storeu_ps(v.data() + base + 8, c);
+                _mm_storeu_ps(v.data() + base + 12, d);
+            };
+            write(r_, ar.v, br.v, cr.v, dr.v);
+            write(i_, ai.v, bi.v, ci.v, di.v);
+        }
+    }
+#endif
     template <bool inverse> void radix_stage(const Stage &stage) noexcept {
         const auto q = stage.len / 4;
+#ifdef HEAVYVERB_FFT_SSE
+        if (q == 1) {
+            terminal_stage<inverse, 1>(stage);
+            return;
+        }
+        if (q == 2) {
+            terminal_stage<inverse, 2>(stage);
+            return;
+        }
+#endif
         for (std::size_t base = 0; base < m_; base += stage.len) {
             std::size_t j = 0;
 #ifdef HEAVYVERB_FFT_SSE
@@ -159,10 +231,6 @@ class RealFFT {
                 radix2_last();
             for (auto s = stages_.rbegin(); s != stages_.rend(); ++s)
                 radix_stage<true>(*s);
-            for (std::size_t k = 0; k < m_; ++k) {
-                r_[k] /= float(m_);
-                i_[k] /= float(m_);
-            }
         } else {
             for (const auto &s : stages_)
                 radix_stage<false>(s);
@@ -215,27 +283,38 @@ class RealFFT {
         imag[0] = 0;
         real[m_] = get(0).real() - get(0).imag();
         imag[m_] = 0;
-        for (std::size_t k = 1; k < m_; ++k) {
+        // Paired bins share the same two complex inputs and twiddle products.
+        for (std::size_t k = 1; k < m_ / 2; ++k) {
             const auto a = get(slot(k)), b = std::conj(get(slot(m_ - k))), w = real_roots_[k];
-            const auto d = a - b;
-            real[slot(k)] = .5f * (a.real() + b.real() + w.real() * d.imag() + w.imag() * d.real());
-            imag[slot(k)] = .5f * (a.imag() + b.imag() + w.imag() * d.imag() - w.real() * d.real());
+            const float ur = a.real() + b.real(), ui = a.imag() + b.imag();
+            const float dr = a.real() - b.real(), di = a.imag() - b.imag();
+            const float tr = w.real() * di + w.imag() * dr, ti = w.imag() * di - w.real() * dr;
+            real[slot(k)] = .5f * (ur + tr);
+            imag[slot(k)] = .5f * (ui + ti);
+            real[slot(m_ - k)] = .5f * (ur - tr);
+            imag[slot(m_ - k)] = .5f * (ti - ui);
         }
+        const auto half = get(slot(m_ / 2));
+        real[slot(m_ / 2)] = half.real();
+        imag[slot(m_ / 2)] = -half.imag();
     }
     void inverse(const float *real, const float *imag, float *time) noexcept {
         set(0, Complex(.5f * (real[0] + real[m_]), .5f * (real[0] - real[m_])));
-        for (std::size_t k = 1; k < m_; ++k) {
-            const float xr = real[slot(k)], xi = imag[slot(k)], yr = real[slot(m_ - k)],
-                        yi = -imag[slot(m_ - k)];
+        for (std::size_t k = 1; k < m_ / 2; ++k) {
+            const auto a = slot(k), b = slot(m_ - k);
+            const float xr = real[a], xi = imag[a], yr = real[b], yi = -imag[b];
+            const float ur = xr + yr, ui = xi + yi, dr = xr - yr, di = xi - yi;
             const auto w = real_roots_[k];
-            const float dr = xr - yr, di = xi - yi;
-            set(slot(k), Complex(.5f * (xr + yr - w.real() * di + w.imag() * dr),
-                                 .5f * (xi + yi + w.real() * dr + w.imag() * di)));
+            const float tr = -w.real() * di + w.imag() * dr, ti = w.real() * dr + w.imag() * di;
+            set(a, Complex(.5f * (ur + tr), .5f * (ui + ti)));
+            set(b, Complex(.5f * (ur - tr), .5f * (ti - ui)));
         }
+        set(slot(m_ / 2), Complex(real[slot(m_ / 2)], -imag[slot(m_ / 2)]));
         complex_fft(true);
+        const float scale = 1.f / float(m_);
         for (std::size_t j = 0; j < m_; ++j) {
-            time[2 * j] = get(j).real();
-            time[2 * j + 1] = get(j).imag();
+            time[2 * j] = get(j).real() * scale;
+            time[2 * j + 1] = get(j).imag() * scale;
         }
     }
 };

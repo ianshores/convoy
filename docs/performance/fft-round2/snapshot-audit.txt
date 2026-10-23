@@ -1,0 +1,9 @@
+r2-00-control: all header hashes match archive
+r2-00-pffft: all header hashes match archive
+r2-01-fused-scaling: all header hashes match archive
+r2-02-terminal-simd: all header hashes match archive
+r2-03-paired-reconstruction: all header hashes match archive
+r2-04-padded-stride: all header hashes match archive
+r2-05-paired-mac: all header hashes match archive
+heavyverb_fft.hpp: production equals final measured snapshot after formatting
+heavyverb_portable.hpp: production equals final measured snapshot after formatting

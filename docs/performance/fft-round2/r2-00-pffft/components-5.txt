@@ -1,0 +1,3 @@
+fft_size,forward_us,inverse_us,mac_partitions,mac_us
+512,0.268127,0.287687,8,0.579386
+4096,2.838477,2.686676,93,53.013453

@@ -1,0 +1,100 @@
+{
+  "partition_benchmark_sha256": "2a932f0471b11b3d77eec66904c42f7d4d2c5068334fe3dd61d7506ecd4e9704",
+  "logical_cpu": 1,
+  "runs": 5,
+  "schedule_seed": "916 + trial",
+  "measurements": [
+    {
+      "label": "r2-00-control",
+      "executable": "build/fft-optimization/r2-00-control/components",
+      "sha256": "1758e27391aa6bb4109768a973b7ac112e418c1947cf156c8173f1fbeb5afbb0",
+      "flags": [
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r2-00-control/include"
+      ],
+      "link_objects": []
+    },
+    {
+      "label": "r2-00-control",
+      "executable": "build/fft-optimization/r2-00-control/partition-components",
+      "sha256": "40c9eb8e757cbb6f8a2729ead2702acb758b9b78a00518f61794f0e635fa089f",
+      "flags": [
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r2-00-control/include"
+      ],
+      "link_objects": []
+    },
+    {
+      "label": "r2-05-paired-mac",
+      "executable": "build/fft-optimization/r2-05-paired-mac/components",
+      "sha256": "faef62b831ca548951b203c47d4a85632039f2b0f96958ade6ddbfbaeb78b38c",
+      "flags": [
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r2-05-paired-mac/include"
+      ],
+      "link_objects": []
+    },
+    {
+      "label": "r2-05-paired-mac",
+      "executable": "build/fft-optimization/r2-05-paired-mac/partition-components",
+      "sha256": "f04038104deddbcfb169f1edc2fadf18c8b487bc053b8ef75a8707b5b8b3e6eb",
+      "flags": [
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-DHEAVYVERB_PORTABLE_FFT",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r2-05-paired-mac/include"
+      ],
+      "link_objects": []
+    },
+    {
+      "label": "r2-00-pffft",
+      "executable": "build/fft-optimization/r2-00-pffft/components",
+      "sha256": "b130317e8debafc0303f49420e1f24fd61825c217e4bc5a6a97c92468993b35f",
+      "flags": [
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r2-00-pffft/include",
+        "-I/home/ian/dev/code/heavyverb/third_party/pffft",
+        "-DPFFFT_STATIC_DEFINE"
+      ],
+      "link_objects": [
+        "/home/ian/dev/code/heavyverb/build/pffft.o",
+        "/home/ian/dev/code/heavyverb/build/pffft_common.o"
+      ]
+    },
+    {
+      "label": "r2-00-pffft",
+      "executable": "build/fft-optimization/r2-00-pffft/partition-components",
+      "sha256": "0517596ea206a071c44feed50a62e6f6baf9c125058ffb56afa5ec3a6d355da4",
+      "flags": [
+        "-O3",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-I/home/ian/dev/code/heavyverb/build/fft-optimization/r2-00-pffft/include",
+        "-I/home/ian/dev/code/heavyverb/third_party/pffft",
+        "-DPFFFT_STATIC_DEFINE"
+      ],
+      "link_objects": [
+        "/home/ian/dev/code/heavyverb/build/pffft.o",
+        "/home/ian/dev/code/heavyverb/build/pffft_common.o"
+      ]
+    }
+  ]
+}

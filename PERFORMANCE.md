@@ -1,6 +1,18 @@
 # CPU optimization measurements
 
-## Latest: custom FFT optimization guide, 2026-10-22
+## Current measurements: second FFT round, 2026-10-22
+
+On the Intel Core Ultra 9 185H, Linux, GCC 16.2.1 `-O3`, the custom engine measures
+**0.192% mono / 0.397% two-channel**, versus PFFFT's **0.179% / 0.370%**.
+Conditions: 48kHz, four-second dense synthetic IR, 256-sample callbacks,
+256/2048-sample partitions, 256-sample wet latency, CPU affinity 1. Five shuffled
+30-second-audio trials after full-history warmup; median elapsed processing cost
+as a percentage of one core's audio-time budget. No fast-math, FMA, or native-CPU
+flags. PFFFT is the default. The [second-round report](FFT_ROUND2_REPORT.md) and
+[raw logs](docs/performance/fft-round2/README.md) cover each optimization,
+short-IR results, validation, callback outliers, and stress-test deadline misses.
+
+## First FFT optimization round, 2026-10-22
 
 The [optimization report](FFT_OPTIMIZATION_REPORT.md) and
 [per-experiment log](docs/performance/fft-optimization/README.md) supersede the

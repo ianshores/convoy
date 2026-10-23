@@ -1,0 +1,9 @@
+{
+  "headers": {
+    "heavyverb.hpp": "07f7fe14fb3bb0793a07a71d23718e36207101e1184a74a1fc19617b19aa5c3e",
+    "heavyverb_pffft.hpp": "6bf5d80f99dfa835402e65b7a21734f06bc529f77a7ffd441f2b605fc09e4a9b",
+    "heavyverb_fft.hpp": "66e34ce7749cb21434b13f3dc2994044fef417970ea9061cf0f48d147b6202d2",
+    "heavyverb_portable.hpp": "26a904e2bf1a531474cadc2c9faaaecaa98bbf6f3ea035def19e8b7f68d07d9b"
+  },
+  "equivalence": "Final production headers equal measured r2-05 snapshot after clang-format; verified in snapshot-audit.txt."
+}

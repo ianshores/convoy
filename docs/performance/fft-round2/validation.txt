@@ -1,0 +1,18 @@
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude -Ithird_party/pffft -DPFFFT_STATIC_DEFINE tests/core.cpp build/pffft.o build/pffft_common.o -o build/heavyverb_test
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -Iinclude tests/core.cpp -o build/heavyverb_test_portable
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude tests/fft.cpp -o build/heavyverb_fft_test
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_FFT_SCALAR -Iinclude tests/fft.cpp -o build/heavyverb_fft_test_scalar
+g++ -O3 -std=c++17 -Wall -Wextra -Iinclude -Ithird_party/pffft -DPFFFT_STATIC_DEFINE tests/realtime.cpp build/pffft.o build/pffft_common.o -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o build/heavyverb_realtime
+g++ -O3 -std=c++17 -Wall -Wextra -DHEAVYVERB_PORTABLE_FFT -Iinclude tests/realtime.cpp -Wl,--wrap=malloc,--wrap=calloc,--wrap=realloc -o build/heavyverb_realtime_portable
+./build/heavyverb_test
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.21865e-06
+./build/heavyverb_test_portable
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+./build/heavyverb_fft_test
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+./build/heavyverb_fft_test_scalar
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+./build/heavyverb_realtime
+PASS: C malloc/calloc/realloc interception found zero audio processing/reset allocations
+./build/heavyverb_realtime_portable
+PASS: C malloc/calloc/realloc interception found zero audio processing/reset allocations

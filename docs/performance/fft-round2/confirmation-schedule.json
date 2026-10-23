@@ -1,0 +1,51 @@
+{
+  "runs": 5,
+  "audio_seconds": 30,
+  "schedule": [
+    [
+      "r2-02-terminal-simd",
+      "r2-03-paired-reconstruction",
+      "r2-00-pffft",
+      "r2-05-paired-mac",
+      "r2-04-padded-stride",
+      "r2-01-fused-scaling",
+      "r2-00-control"
+    ],
+    [
+      "r2-01-fused-scaling",
+      "r2-05-paired-mac",
+      "r2-00-pffft",
+      "r2-03-paired-reconstruction",
+      "r2-02-terminal-simd",
+      "r2-00-control",
+      "r2-04-padded-stride"
+    ],
+    [
+      "r2-05-paired-mac",
+      "r2-02-terminal-simd",
+      "r2-03-paired-reconstruction",
+      "r2-01-fused-scaling",
+      "r2-00-pffft",
+      "r2-00-control",
+      "r2-04-padded-stride"
+    ],
+    [
+      "r2-02-terminal-simd",
+      "r2-03-paired-reconstruction",
+      "r2-00-pffft",
+      "r2-05-paired-mac",
+      "r2-04-padded-stride",
+      "r2-01-fused-scaling",
+      "r2-00-control"
+    ],
+    [
+      "r2-04-padded-stride",
+      "r2-00-pffft",
+      "r2-00-control",
+      "r2-05-paired-mac",
+      "r2-02-terminal-simd",
+      "r2-01-fused-scaling",
+      "r2-03-paired-reconstruction"
+    ]
+  ]
+}

@@ -91,29 +91,37 @@ test renders the real external headlessly and compares its output.
 `-O3 -std=c++17` (C99 for PFFFT), pinned to logical CPU 1. No fast-math,
 FMA, or native-CPU build flags. Dense synthetic four-second IR at 48kHz,
 256-sample callbacks and early partitions, 2048-sample tail partitions,
-256-sample wet latency. Five alternating trials measure 30 seconds of audio
+256-sample wet latency. Five shuffled trials measure 30 seconds of audio
 per case after warming the full history. Figures are median elapsed processing
 cost as a percentage of **one core's audio-time budget**.
 
 | FFT backend, same two-stage policy | Mono | Two independent channels |
 | --- | ---: | ---: |
-| Optimized custom FFT | **0.24%** | **0.50%** |
+| Custom FFT | **0.19%** | **0.40%** |
 | PFFFT (default) | 0.18% | 0.37% |
 
 The custom FFT uses a real-input transform, separate real/imaginary planes,
-contiguous coefficients, four-float SSE butterflies on supported x86 targets,
-and radix-4 forward/inverse stages that share an internal bin order. A scalar
-fallback is available. It preserves the full IR and requested latency.
-The custom engine costs about **34% more than PFFFT** here, approximately +0.06 percentage
-points of one core for mono. Other workloads can differ substantially.
+contiguous coefficients, and four-float SSE butterflies on supported x86 targets.
+Radix-4 stages share an internal bin order; terminal stages process independent
+groups together. Paired real-spectrum reconstruction, fused inverse scaling,
+padded spectrum strides, and paired partition accumulation reduce processing
+cost. A scalar fallback is available. The full IR and requested latency are
+preserved.
 
-Read the [optimization report](FFT_OPTIMIZATION_REPORT.md) for each suggestion's
-measured effect, rejected experiments, and validation. The
-[full log](docs/performance/fft-optimization/README.md) includes raw trials,
-callback outliers, multi-instance stress failures, and reproduction commands.
-These are standalone engine measurements, not hard realtime guarantees or
-in-game, mobile, or console measurements. [PERFORMANCE.md](PERFORMANCE.md)
-retains the earlier historical comparisons.
+The custom engine costs about **7% more than PFFFT** in this four-second test,
+approximately +0.013 percentage points of one core for mono. For a one-second
+IR under the same conditions, custom uses 0.103% mono / 0.213% for two channels,
+versus PFFFT's 0.078% / 0.158%, a 33–34% relative difference. PFFFT is the default.
+
+Read the [second optimization report](FFT_ROUND2_REPORT.md) for the investigation,
+each change's measured effect, numerical checks, and the complete workload
+comparison. The [second-round logs](docs/performance/fft-round2/README.md)
+contain raw trials and source snapshots. The [first optimization report](FFT_OPTIMIZATION_REPORT.md)
+and [first-round logs](docs/performance/fft-optimization/README.md) document the
+preceding experiments. These are standalone engine measurements on the CPU
+listed above. Ordinary-priority trials include callback deadline misses;
+these figures are not hard realtime guarantees or in-game, mobile, or console
+measurements. [PERFORMANCE.md](PERFORMANCE.md) contains historical comparisons.
 
 Long IRs use small blocks for early reflections and eight-times-larger blocks
 for the tail, capped at 8192 samples. The tail is time-aligned with the early

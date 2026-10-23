@@ -1,0 +1,72 @@
+{
+  "r2-00-control": {
+    "components": {
+      "512:forward_us": 0.857486,
+      "512:inverse_us": 1.084065,
+      "512:copy_zero_us": 0.01377,
+      "512:overlap_us": 0.031635,
+      "512:mac_partitions": 8.0,
+      "512:mac_us": 0.553955,
+      "512:shuffle_pair_us": 0.0,
+      "512:plan_bytes": 8440.0,
+      "4096:forward_us": 8.780682,
+      "4096:inverse_us": 9.714445,
+      "4096:copy_zero_us": 0.090984,
+      "4096:overlap_us": 0.234639,
+      "4096:mac_partitions": 93.0,
+      "4096:mac_us": 55.596048,
+      "4096:shuffle_pair_us": 0.0,
+      "4096:plan_bytes": 65848.0
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 2.680614,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 78.150482
+    }
+  },
+  "r2-05-paired-mac": {
+    "components": {
+      "512:forward_us": 0.539499,
+      "512:inverse_us": 0.593729,
+      "512:copy_zero_us": 0.013521,
+      "512:overlap_us": 0.032979,
+      "512:mac_partitions": 8.0,
+      "512:mac_us": 0.533775,
+      "512:shuffle_pair_us": 0.0,
+      "512:plan_bytes": 8440.0,
+      "4096:forward_us": 6.027654,
+      "4096:inverse_us": 5.888779,
+      "4096:copy_zero_us": 0.090968,
+      "4096:overlap_us": 0.235836,
+      "4096:mac_partitions": 93.0,
+      "4096:mac_us": 55.953546,
+      "4096:shuffle_pair_us": 0.0,
+      "4096:plan_bytes": 65848.0
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 1.886281,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 65.35922
+    }
+  },
+  "r2-00-pffft": {
+    "components": {
+      "512:forward_us": 0.268424,
+      "512:inverse_us": 0.283097,
+      "512:mac_partitions": 8.0,
+      "512:mac_us": 0.569306,
+      "4096:forward_us": 2.829857,
+      "4096:inverse_us": 2.629815,
+      "4096:mac_partitions": 93.0,
+      "4096:mac_us": 53.013453
+    },
+    "partition-components": {
+      "512:partitions": 8.0,
+      "512:complete_block_us": 1.342379,
+      "4096:partitions": 93.0,
+      "4096:complete_block_us": 62.296728
+    }
+  }
+}

@@ -1,5 +1,8 @@
 # Heavyverb FFT optimization report
 
+First-round record. See the [second-round report](FFT_ROUND2_REPORT.md) for
+current measurements and the next set of experiments.
+
 2026-10-22 · Odysseus · Intel Core Ultra 9 185H · Linux · GCC 16.2.1
 
 **The custom engine is now 6.5× faster, using 84.7% less CPU.**

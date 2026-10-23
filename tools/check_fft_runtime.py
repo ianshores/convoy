@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
 """Run sequential callback, synthetic load, and quiet-signal diagnostics."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -8,8 +9,11 @@ import platform
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "docs/performance/fft-optimization/runtime"
-OUTPUT.mkdir(exist_ok=True)
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--output", default="docs/performance/fft-optimization/runtime")
+args = parser.parse_args()
+OUTPUT = ROOT / args.output
+OUTPUT.mkdir(parents=True, exist_ok=True)
 BUILD = ROOT / "build/fft-optimization/runtime"
 BUILD.mkdir(exist_ok=True)
 metadata = {

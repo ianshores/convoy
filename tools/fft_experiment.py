@@ -26,6 +26,7 @@ def run(command, **kwargs):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("label")
+    parser.add_argument("--output-root", default="docs/performance/fft-optimization")
     backend = parser.add_mutually_exclusive_group()
     backend.add_argument("--baseline", action="store_true")
     backend.add_argument("--pffft", action="store_true")
@@ -39,7 +40,7 @@ def main():
         parser.error("label must contain only letters, digits, underscores or hyphens")
     if args.runs < 0 or args.seconds < 1:
         parser.error("runs must be nonnegative and seconds must be positive")
-    output = ROOT / "docs/performance/fft-optimization" / args.label
+    output = ROOT / args.output_root / args.label
     if output.exists():
         parser.error("that label already exists; use a new label to preserve the log")
     output.mkdir(parents=True)
@@ -111,6 +112,9 @@ def main():
         compile_source("fft-correctness", "fft.cpp")
         capture("fft-correctness")
         compile_source("components", "fft_benchmark.cpp")
+        capture("components")
+    elif args.pffft:
+        compile_source("components", "pffft_components.cpp")
         capture("components")
     environment = dict(os.environ, HEAVYVERB_BENCH_SECONDS=str(args.seconds))
     for trial in range(1, args.runs + 1):

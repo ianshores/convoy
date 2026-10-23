@@ -1,0 +1,95 @@
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.14957e-07, max sampled spectrum error 0.000503757
+PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error 3.09944e-06
+PASS: 60 FFT cases, N=32..16384; impulse/DC/Nyquist/tone/random/decay; max roundtrip error 4.76837e-07, worst RMS 1.29159e-07, max sampled spectrum error 0.00050369
+Convolution CPU is excluded from hvcc static estimates; run the benchmark.
+PASS (custom FFT): 15 stereo exported graph renders, dense 1597-tap IR; max error 7.73e-09; invalid IR/partition rejected
+[  8%] Building CXX object CMakeFiles/heavyverb_fft_test.dir/tests/fft.cpp.o
+[ 16%] Building CXX object CMakeFiles/heavyverb_test.dir/tests/core.cpp.o
+[ 25%] Linking CXX executable heavyverb_fft_test
+[ 25%] Built target heavyverb_fft_test
+[ 33%] Building CXX object CMakeFiles/heavyverb_fft_test_scalar.dir/tests/fft.cpp.o
+[ 41%] Linking CXX executable heavyverb_test
+[ 41%] Built target heavyverb_test
+[ 50%] Building CXX object CMakeFiles/heavyverb_realtime.dir/tests/realtime.cpp.o
+[ 58%] Linking CXX executable heavyverb_fft_test_scalar
+[ 58%] Built target heavyverb_fft_test_scalar
+[ 66%] Building CXX object CMakeFiles/heavyverb_benchmark.dir/tests/benchmark.cpp.o
+[ 75%] Linking CXX executable heavyverb_realtime
+[ 75%] Built target heavyverb_realtime
+[ 83%] Building CXX object CMakeFiles/heavyverb_pd.dir/pd/heavyverb_tilde.cpp.o
+[ 91%] Linking CXX shared module "heavyverb~.pd_linux"
+[100%] Linking CXX executable heavyverb_benchmark
+[100%] Built target heavyverb_pd
+[100%] Built target heavyverb_benchmark
+Test project /home/ian/dev/code/heavyverb/build-cmake-custom-comparison
+    Start 1: convolution
+1/4 Test #1: convolution ......................   Passed    0.10 sec
+    Start 2: fft
+2/4 Test #2: fft ..............................   Passed    0.03 sec
+    Start 3: fft_scalar
+3/4 Test #3: fft_scalar .......................   Passed    0.03 sec
+    Start 4: realtime
+4/4 Test #4: realtime .........................   Passed    0.01 sec
+
+100% tests passed out of 4
+
+Total Test time (real) =   0.18 sec
+PASS: native Pd external rendered matching early and late response; error 2.24e-08
+Convolution CPU is excluded from hvcc static estimates; run the benchmark.
+make: Entering directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+rm -rf ../../build
+rm -rf ../../bin/HeavyVerbDemo
+rm -rf ../../bin/HeavyVerbDemo-*
+rm -rf ../../bin/HeavyVerbDemo.clap
+rm -rf ../../bin/HeavyVerbDemo.component
+rm -rf ../../bin/HeavyVerbDemo.lv2
+rm -rf ../../bin/HeavyVerbDemo.vst
+rm -rf ../../bin/HeavyVerbDemo.vst3
+make: Leaving directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+make: Entering directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+Compiling HeavyContext.cpp
+Compiling HeavyDPF_HeavyVerbDemo.cpp
+Compiling Heavy_HeavyVerbDemo.cpp
+Compiling HvHeavy.cpp
+Compiling HvLightPipe.c
+Compiling HvMessage.c
+In file included from HvMessage.h:20,
+                 from HvMessage.c:17:
+HvMessage.c: In function ‘msg_copyToBuffer’:
+HvUtils.h:134:38: warning: ‘strncpy’ specified bound depends on the length of the source argument [-Wstringop-truncation]
+  134 | #define hv_strncpy(_dst, _src, _len) strncpy(_dst, _src, _len)
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+HvMessage.c:74:7: note: in expansion of macro ‘hv_strncpy’
+   74 |       hv_strncpy(p, msg_getSymbol(m,i), symLen);
+      |       ^~~~~~~~~~
+HvUtils.h:128:22: note: length computed here
+  128 | #define hv_strlen(a) strlen(a)
+      |                      ^~~~~~~~~
+HvMessage.c:72:44: note: in expansion of macro ‘hv_strlen’
+   72 |       const hv_size_t symLen = (hv_size_t) hv_strlen(msg_getSymbol(m,i)) + 1; // include the trailing null char
+      |                                            ^~~~~~~~~
+Compiling HvMessagePool.c
+Compiling HvMessageQueue.c
+Compiling HvSignalVar.c
+Compiling HvTable.c
+Compiling HvUtils.c
+HvUtils.c: In function ‘hv_string_to_hash’:
+HvUtils.c:45:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   45 |     case 3: x ^= (str[2] << 16);
+      |             ~~^~~~~~~~~~~~~~~~~
+HvUtils.c:46:5: note: here
+   46 |     case 2: x ^= (str[1] << 8);
+      |     ^~~~
+HvUtils.c:46:15: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   46 |     case 2: x ^= (str[1] << 8);
+      |             ~~^~~~~~~~~~~~~~~~
+HvUtils.c:47:5: note: here
+   47 |     case 1: x ^= str[0]; x *= n;
+      |     ^~~~
+Compiling DistrhoPluginMain.cpp (CLAP)
+Compiling DistrhoPluginMain.cpp (VST3)
+Creating CLAP plugin for HeavyVerbDemo
+Creating VST3 plugin for HeavyVerbDemo
+make: Leaving directory '/home/ian/dev/code/heavyverb/build/effect-custom/plugin/source'
+Built plugins in /home/ian/dev/code/heavyverb/build/effect-custom/bin
