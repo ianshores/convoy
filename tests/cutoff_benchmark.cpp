@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Offline coefficient-floor and tail-trimming experiment; no production policy.
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <chrono>
 #include <cstdio>
 #include <random>
@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
         for(int i=0;i<length;++i) full[i]=float(.1*noise(rng)*std::pow(10.,-decay*i/length/20.));
         std::vector<float> signal(length+8192+256,0), reference(signal.size()), rendered(signal.size());
         for(int i=0;i<8192;++i) signal[i]=.25f*noise(rng);
-        heavyverb::Convolver original(full.data(),full.size()); original.process(signal.data(),reference.data(),signal.size());
+        convoy::Convolver original(full.data(),full.size()); original.process(signal.data(),reference.data(),signal.size());
         for(int step=0;step<5;++step) {
             const int policy=(step+trial)%5; auto ir=full; int zeroed=0;
             const char* names[]={"full","floor_coefficients","trim_peak_tail","trim_l1_tail","live_partition_cutoff"};
@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
             if(policy==2) while(ir.size()>1 && std::abs(ir.back())<threshold) ir.pop_back();
             if(policy==3) { double sum=0; while(ir.size()>1 && sum+std::abs(ir.back())<=threshold) {sum+=std::abs(ir.back());ir.pop_back();} }
             double bound=0; for(std::size_t i=0;i<full.size();++i) bound+=std::abs(double(full[i])-(i<ir.size()?ir[i]:0));
-            heavyverb::Convolver engine(ir.data(),ir.size());
+            convoy::Convolver engine(ir.data(),ir.size());
             if(policy==4) {engine.set_tail_cutoff_db(-96.f); engine.reset();
                 for(std::size_t i=engine.retained_samples();i<full.size();++i)bound+=std::abs(full[i]);
             }

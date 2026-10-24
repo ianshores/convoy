@@ -1,6 +1,0 @@
-PASS: CLAP parameter range/default/automation, stereo render, live cutoff, restoration; changed peak 0.174952954, restore error 0
-PASS: maker, mono/stereo WAV, resampling, fresh-instance state restore, bad-file fallback, latest-request handoff, built-in restore
-PASS: PCM16/24/32, float32/64, stereo mapping, sinc rate conversion/integral, invalid format/channel/nonfinite/length rejection
-crossfade final=-0.049999997, max step=4.16785479e-05
-PASS: worker handoff, variable/in-place callbacks, zero audio C/C++ allocations; crossfade maximum sample step 4.16785479e-05
-PASS: aligned LightPipe payloads, variable sizes, full/wrap/FIFO/reset (100,000 writes)

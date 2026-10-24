@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "convoy",
+  "name": "Convoy",
+  "version": "0.2.0",
+  "description": "Fast, lightweight partitioned convolution engine",
+  "language": "c++17",
+  "license": "MIT",
+  "include_directory": "include",
+  "header": "convoy.hpp",
+  "type": "convoy::Convolver",
+  "cmake_target": "convoy::convoy",
+  "deployment_repository": "https://github.com/ianshores/foundry"
+}

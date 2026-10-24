@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <atomic>
 #include <cstdlib>
 #include <iostream>
@@ -34,7 +34,7 @@ int main() {
             for (std::size_t i = 0; i < 1701; ++i) input[i] = random(rng);
             for (std::size_t i = 0; i < 1701; ++i)
                 for (std::size_t j = 0; j < length; ++j) expected[i + j + b] += input[i] * ir[j];
-            heavyverb::Convolver c(ir.data(), ir.size(), b);
+            convoy::Convolver c(ir.data(), ir.size(), b);
             auto output = input;
             const auto before = allocations.load();
             for (std::size_t i = 0; i < output.size(); i += callback)
@@ -60,7 +60,7 @@ int main() {
             for (std::size_t i = 0; i < source_length; ++i) input[i] = random(rng);
             for (std::size_t i = 0; i < source_length; ++i)
                 for (std::size_t j = 0; j < length; ++j) expected[i + j + b] += input[i] * ir[j];
-            heavyverb::Convolver c(ir.data(), ir.size(), b);
+            convoy::Convolver c(ir.data(), ir.size(), b);
             const auto before = allocations.load();
             for (std::size_t i = 0; i < input.size(); i += 127)
                 c.process(input.data() + i, output.data() + i, std::min<std::size_t>(127, input.size() - i));
@@ -87,7 +87,7 @@ int main() {
                 for (std::size_t j = 0; j < length; ++j)
                     if (ir[j] != 0)
                         for (std::size_t i = 0; i < source_length; ++i) expected[i + j + b] += input[i] * ir[j];
-                heavyverb::Convolver c(ir.data(), length, b);
+                convoy::Convolver c(ir.data(), length, b);
                 require(c.latency() == b, "partitioning changed latency");
                 auto output = input;
                 const auto before = allocations.load();
@@ -112,7 +112,7 @@ int main() {
             for(auto& v:ir)v=random(rng)*.1f;
             for(std::size_t i=0;i<source_length;++i)input[i]=random(rng);
             for(std::size_t i=0;i<source_length;++i)for(std::size_t j=0;j<length;++j)expected[i+j+b]+=input[i]*ir[j];
-            heavyverb::Convolver c(ir.data(),length,b);
+            convoy::Convolver c(ir.data(),length,b);
             for(std::size_t i=0;i<input.size();i+=33)c.process(input.data()+i,output.data()+i,std::min<std::size_t>(33,input.size()-i));
             for(std::size_t i=0;i<output.size();++i) {
                 const auto e=std::abs(double(output[i])-expected[i]);worst=std::max(worst,e);
@@ -122,11 +122,11 @@ int main() {
         float impulse = 1;
         for (auto b : {0u, 15u, 33u, 16384u}) {
             bool rejected = false;
-            try { heavyverb::Convolver c(&impulse, 1, b); } catch (const std::invalid_argument&) { rejected = true; }
+            try { convoy::Convolver c(&impulse, 1, b); } catch (const std::invalid_argument&) { rejected = true; }
             require(rejected, "invalid partition accepted");
         }
         bool rejected = false;
-        try { heavyverb::Convolver c(nullptr, 0); } catch (const std::invalid_argument&) { rejected = true; }
+        try { convoy::Convolver c(nullptr, 0); } catch (const std::invalid_argument&) { rejected = true; }
         require(rejected, "empty IR accepted");
         std::cout << "PASS: 183 reference cases including split boundaries and a four-second IR, arbitrary callbacks, in-place, reset, no audio allocations; max error " << worst << '\n';
     } catch (const std::exception& e) { std::cerr << e.what() << '\n'; return 1; }

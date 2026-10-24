@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <chrono>
 #include <cstdio>
 #include <random>
@@ -10,7 +10,7 @@ int main(){
   std::vector<float>ir(192000),input(callback),output(callback);
   for(std::size_t i=0;i<ir.size();++i)ir[i]=noise(rng)*std::pow(10.,-6.*i/ir.size());
   for(auto&v:input)v=noise(rng);
-  heavyverb::Convolver left(ir.data(),ir.size()),right(ir.data(),ir.size());
+  convoy::Convolver left(ir.data(),ir.size()),right(ir.data(),ir.size());
   for(int i=0;i<192000;i+=callback){left.process(input.data(),output.data(),callback);right.process(input.data(),output.data(),callback);}
   std::vector<double>times;const int count=30*48000/callback;times.reserve(count);double total=0;int misses=0;
   for(int i=0;i<count;++i){const auto start=std::chrono::steady_clock::now();

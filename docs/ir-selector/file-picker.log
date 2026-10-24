@@ -1,4 +1,0 @@
-Host still alive: True
-[dpf] createNextWindow 560 290 1.000000
-PASS: file-picker selection persisted and rendered the chosen WAV
-PASS: maker, mono/stereo WAV, resampling, fresh-instance state restore, bad-file fallback, latest-request handoff, built-in restore

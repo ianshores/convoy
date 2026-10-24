@@ -54,6 +54,14 @@ def main():
     for source in (ROOT / "tests").glob("*.cpp"):
         shutil.copy2(source, sources / source.name)
     shutil.copytree(ROOT / "include", include, dirs_exist_ok=True)
+    # Keep historical experiment identifiers while checking the same current sources.
+    # This isolated build copy lets preserved pre-rename reference engines remain usable.
+    for source in sources.glob('*.cpp'):
+        source.write_text(source.read_text().replace('convoy', 'heavyverb').replace('CONVOY', 'HEAVYVERB'))
+    for stem in ('convoy', 'convoy_fft', 'convoy_portable'):
+        canonical = ROOT / 'include' / (stem + '.hpp')
+        (include / (stem.replace('convoy', 'heavyverb') + '.hpp')).write_text(
+            canonical.read_text().replace('convoy', 'heavyverb').replace('CONVOY', 'HEAVYVERB'))
     if args.baseline:
         shutil.copy2(ROOT / "tests/reference/original_portable.hpp", include / "heavyverb_portable.hpp")
         shutil.copy2(ROOT / "tests/reference/original.hpp", include / "heavyverb.hpp")

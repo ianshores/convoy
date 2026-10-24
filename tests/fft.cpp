@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-#include "heavyverb_fft.hpp"
+#include "convoy_fft.hpp"
 #include <complex>
 #include <iostream>
 #include <random>
@@ -11,7 +11,7 @@ int main() {
         std::uniform_real_distribution<float> noise(-1.f, 1.f);
         int cases = 0;
         for (std::size_t n = 32; n <= 16384; n *= 2) {
-            heavyverb::detail::RealFFT plan(n);
+            convoy::detail::RealFFT plan(n);
             std::vector<float> in(n), out(n), real(n / 2 + 1), imag(n / 2 + 1);
             std::vector<bool> seen(n / 2 + 1, false);
             for (std::size_t k = 0; k <= n / 2; ++k) {
@@ -35,9 +35,9 @@ int main() {
                     if (type == 5)
                         in[i] = float(noise(gen) * std::exp(-30. * i / n));
                 }
-#ifdef HEAVYVERB_TEST_PACKED
+#ifdef CONVOY_TEST_PACKED
                 std::fill(in.begin() + n / 2, in.end(), 0.f);
-#ifdef HEAVYVERB_TEST_PACKED8
+#ifdef CONVOY_TEST_PACKED8
                 constexpr std::size_t width = 8;
 #else
                 constexpr std::size_t width = 4;
@@ -48,7 +48,7 @@ int main() {
                     real[k] = packed[(k / width) * 2 * width + k % width];
                     imag[k] = packed[(k / width) * 2 * width + k % width + width];
                 }
-#elif defined(HEAVYVERB_TEST_HALF_FORWARD)
+#elif defined(CONVOY_TEST_HALF_FORWARD)
                 std::fill(in.begin() + n / 2, in.end(), 0.f);
                 plan.forward_half(in.data(), real.data(), imag.data());
 #else
@@ -101,7 +101,7 @@ int main() {
                     if (err > 3.e-6 * n)
                         throw std::runtime_error("FFT spectrum differs from double DFT");
                 }
-#ifdef HEAVYVERB_TEST_PACKED
+#ifdef CONVOY_TEST_PACKED
                 plan.inverse_packed(packed.data(), out.data());
 #else
                 plan.inverse(real.data(), imag.data(), out.data());

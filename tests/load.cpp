@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Synthetic instance/format stress: not an in-game performance claim.
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <chrono>
 #include <cstdio>
 #include <memory>
@@ -29,9 +29,9 @@ int main() {
             ir[k] = random(g) * std::exp(-6.f * k / ir.size());
         for (auto &x : input)
             x = random(g);
-        std::vector<std::unique_ptr<heavyverb::Convolver>> engines;
+        std::vector<std::unique_ptr<convoy::Convolver>> engines;
         for (int k = 0; k < c.instances; ++k)
-            engines.emplace_back(new heavyverb::Convolver(ir.data(), ir.size(), c.partition));
+            engines.emplace_back(new convoy::Convolver(ir.data(), ir.size(), c.partition));
         for (int k = 0; k < c.rate * 4; k += c.callback)
             for (auto &e : engines)
                 e->process(input.data(), output.data(), c.callback);

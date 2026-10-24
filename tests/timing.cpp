@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Linux diagnostic: distinguish processing CPU time from elapsed callback time.
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <chrono>
 #include <cstdio>
 #include <memory>
@@ -23,9 +23,9 @@ int main() {
         std::vector<float> ir(192000), input(callback), output(callback);
         for (auto& v : ir) v = noise(rng);
         for (auto& v : input) v = noise(rng);
-        std::vector<std::unique_ptr<heavyverb::Convolver>> engines;
+        std::vector<std::unique_ptr<convoy::Convolver>> engines;
         for (int ch = 0; ch < channels; ++ch)
-            engines.emplace_back(new heavyverb::Convolver(ir.data(), ir.size()));
+            engines.emplace_back(new convoy::Convolver(ir.data(), ir.size()));
         for (int i = 0; i < 192000; i += callback)
             for (auto& engine : engines) engine->process(input.data(), output.data(), callback);
         double max_wall = 0, cpu_at_max_wall = 0, max_cpu = 0;

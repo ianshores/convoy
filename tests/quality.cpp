@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Full-tail null test against an independent double-precision linear convolution.
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <complex>
 #include <cstdio>
 #include <random>
@@ -78,7 +78,7 @@ int main() {
                 for (std::size_t i = 0; i < size; ++i)
                     ref[i] *= filter[i];
                 reference_fft(ref, true);
-                heavyverb::Convolver convolver(ir.data(), ir.size(), latency);
+                convoy::Convolver convolver(ir.data(), ir.size(), latency);
                 const std::size_t blocks[] = {7, 64, 127, 256, 1023};
                 for (std::size_t i = 0, step = 0; i < total; ++step) {
                     const auto count = std::min(blocks[step % 5], total - i);

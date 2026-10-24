@@ -1,36 +1,16 @@
-name: Check
+name: Convoy engine
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
-  linux:
+  engine:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: sudo apt-get update && sudo apt-get install -y puredata-core puredata-dev
-      - run: pip install -r requirements-export.txt
-      - run: make test pd PD_INCLUDE_DIR=/usr/include/pd
-      - run: make check-export check-pd PD=/usr/bin/pd
-      - run: python tests/pd.py /usr/bin/pd --cutoff
-      - run: cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release -DPD_INCLUDE_DIR=/usr/include/pd
-      - run: cmake --build build-cmake && ctest --test-dir build-cmake --output-on-failure
-      - run: cmake -S . -B build-cmake-sse -DCMAKE_BUILD_TYPE=Release -DHEAVYVERB_DISABLE_AVX=ON
-      - run: cmake --build build-cmake-sse && ctest --test-dir build-cmake-sse --output-on-failure
-      - run: cmake -S . -B build-cmake-uniform -DCMAKE_BUILD_TYPE=Release -DHEAVYVERB_UNIFORM_PARTITIONS=ON
-      - run: cmake --build build-cmake-uniform && ctest --test-dir build-cmake-uniform --output-on-failure
-
-  wav-selector:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: sudo apt-get update && sudo apt-get install -y libsndfile1-dev libsamplerate0-dev libx11-dev libgl1-mesa-dev
-      - run: pip install -r requirements-export.txt
-      - run: git clone https://github.com/DISTRHO/DPF.git build/dpf
-      - run: git -C build/dpf checkout 4238e1c7f0351bbe488d79f0899c540543ac7583
-      - run: git -C build/dpf submodule update --init --recursive
-      - run: python tools/build_plugins.py examples/effect.pd build/effect --dpf build/dpf
-      - run: python tools/test_wav_selector.py build/effect --dpf build/dpf
+      - run: make test
+      - run: cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build-cmake --parallel 2 && ctest --test-dir build-cmake --output-on-failure
+      - run: cmake -S . -B build-cmake-sse -DCMAKE_BUILD_TYPE=Release -DCONVOY_DISABLE_AVX=ON
+      - run: cmake --build build-cmake-sse --parallel 2 && ctest --test-dir build-cmake-sse --output-on-failure
+      - run: cmake -S . -B build-cmake-uniform -DCMAKE_BUILD_TYPE=Release -DCONVOY_UNIFORM_PARTITIONS=ON
+      - run: cmake --build build-cmake-uniform --parallel 2 && ctest --test-dir build-cmake-uniform --output-on-failure

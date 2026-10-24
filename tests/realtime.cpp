@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // GNU linker wrappers check allocations in our direct C calls. tests/core.cpp separately intercepts C++ operator new.
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
@@ -31,7 +31,7 @@ void* __wrap_realloc(void* p, std::size_t n) { if (armed) ++calls; return __real
 }
 int main() {
     std::vector<float> ir(4 * 48000, 0.001f), input(127, 0.1f), output(127);
-    heavyverb::Convolver engine(ir.data(), ir.size());
+    convoy::Convolver engine(ir.data(), ir.size());
     // Check that the linker interception is active before trusting it.
     armed = true;
     void* (*volatile allocator)(std::size_t) = std::malloc;

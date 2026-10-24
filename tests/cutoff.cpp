@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <cstdio>
 #include <random>
 #include <limits>
@@ -12,7 +12,7 @@ int main() {
     for (std::size_t b : {16,64,256}) for(std::size_t length : {127,1597,192000}) {
         std::vector<float> ir(length);
         for(std::size_t i=0;i<length;++i) ir[i]=noise(rng)*std::pow(10.,-8.*i/length);
-        heavyverb::Convolver engine(ir.data(),length,b);
+        convoy::Convolver engine(ir.data(),length,b);
         for(float cutoff : {0.f,-144.f,-120.f,-96.f,-72.f,-36.f,0.f,std::numeric_limits<float>::quiet_NaN(),1.f}) {
             engine.set_tail_cutoff_db(cutoff); engine.reset();
             const auto retained=std::min(length,engine.retained_samples());
@@ -34,7 +34,7 @@ int main() {
     std::vector<double> expected(in.size()+2*b);
     for(std::size_t i=0;i<length;++i) ir[i]=noise(rng)*std::pow(10.,-7.*i/length);
     for(auto &v:in)v=noise(rng);
-    heavyverb::Convolver engine(ir.data(),length,b);
+    convoy::Convolver engine(ir.data(),length,b);
     for(std::size_t step=0;step<blocks;++step) {
         float db=step<16?0.f:step<48?-96.f:step<64?-48.f:step<80?0.f:(step%3==0?-72.f:0.f);
         engine.set_tail_cutoff_db(db);

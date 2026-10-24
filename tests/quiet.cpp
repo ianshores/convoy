@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Diagnostic only: never change the host's floating-point mode in the engine.
-#include "heavyverb.hpp"
+#include "convoy.hpp"
 #include <chrono>
 #include <cstdio>
 #include <random>
@@ -23,7 +23,7 @@ int main() {
                 ir[k] = noise(gen) * std::exp(-(kind == 2 ? 90.f : 6.f) * k / ir.size());
             for (auto &x : input)
                 x = noise(gen) * (kind == 1 ? 1.e-37f : 1.f);
-            heavyverb::Convolver c(ir.data(), ir.size());
+            convoy::Convolver c(ir.data(), ir.size());
             for (int k = 0; k < 192000; k += 256)
                 c.process(input.data(), output.data(), 256);
             const int blocks = 5 * 48000 / 256;
