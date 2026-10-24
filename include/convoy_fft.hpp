@@ -21,6 +21,6 @@
 #endif
 namespace convoy {
 namespace detail {
-using RealFFT = ::dsp::RealFFT;
+using RealFFT = ::shores_dsp::RealFFT;
 } // namespace detail
 } // namespace convoy
