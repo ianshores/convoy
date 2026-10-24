@@ -12,7 +12,7 @@
 #if defined(CONVOY_DISABLE_AVX) && !defined(DSP_DISABLE_AVX)
 #define DSP_DISABLE_AVX CONVOY_DISABLE_AVX
 #endif
-#include <dsp/fft.hpp>
+#include "dsp/fft.hpp"
 #if defined(DSP_FFT_SSE) && !defined(CONVOY_FFT_SSE)
 #define CONVOY_FFT_SSE DSP_FFT_SSE
 #endif
