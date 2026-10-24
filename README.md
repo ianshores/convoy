@@ -7,14 +7,16 @@ reverb, cabinet and microphone responses, spatial filtering, or any finite
 impulse response. The same engine can underpin sound-design tools, offline
 editing, plugins, and interactive audio systems.
 
-The engine is header-only and includes its own FFT. Its processing and reset
+The engine is header-only and uses the FFT from the
+[shared DSP library](https://github.com/ianshores/dsp). Its processing and reset
 operations allocate no memory, acquire no locks, and access no files. Runtime
 AVX acceleration is available on supported GNU/Clang x86 builds, with SSE and
 scalar fallbacks. Host integrations are developed and tested separately.
 
 ## Use the engine
 
-Add `include/` to your include path and compile as C++17:
+Clone with `git clone --recurse-submodules`, add `include/` and `vendor/dsp/include/` to your include
+path, and compile as C++17:
 
 ```cpp
 #include <convoy.hpp>
@@ -36,7 +38,7 @@ lengths may vary. The partition size sets the wet latency: 256 samples is
 With CMake:
 
 ```cmake
-add_subdirectory(path/to/convoy)
+add_subdirectory(path/to/convoy) # from a recursive clone
 target_link_libraries(MyAudioTarget PRIVATE convoy::convoy)
 ```
 
@@ -46,14 +48,15 @@ if you do not want its test targets. [API and integration contract](docs/API.md)
 
 ## Repository boundaries
 
-This repository owns the DSP algorithm, C++ API, correctness tests, benchmarks,
-and performance records.
+This repository owns the convolution algorithm, C++ API, correctness tests,
+benchmarks, and performance records. The shared DSP library owns the FFT and
+future reusable primitives; its revision is pinned as a submodule here.
 
 [Foundry](https://github.com/ianshores/foundry) owns deployment: Pd/PlugData
 adapters, optional Heavy compilation, plugin editors, CLAP/VST3 packaging,
 Wwise wrappers, Unreal Submix and MetaSound integration, and host validation.
-Foundry consumes a pinned Convoy revision as an external module. Other DSP
-modules can be developed in their own repositories and consumed the same way.
+Foundry consumes a pinned Convoy revision as an external module. Small reusable
+DSP building blocks live together in the shared library.
 
 Convoy can be embedded directly in C++ without Foundry or Heavy. To audition it
 in a DAW or PlugData, follow [Foundry's Convoy adapter guide](https://github.com/ianshores/foundry/tree/main/adapters/convoy).
@@ -64,7 +67,7 @@ Target readiness and SDK requirements are recorded there.
 Long responses use two partition sizes: small blocks for the start of the IR,
 then blocks eight times larger, capped at 8192 samples. At the default setting,
 the first 2048 samples use 256-sample blocks and the remainder use 2048-sample
-blocks. The FFT uses radix-4 stages, packed spectra, half-input pruning, and
+blocks. The shared FFT uses radix-4 stages, packed spectra, half-input pruning, and
 batched accumulation.
 
 All IR coefficients are retained by default. The optional

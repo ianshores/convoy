@@ -4,7 +4,11 @@ add_library(convoy INTERFACE)
 add_library(convoy::convoy ALIAS convoy)
 target_include_directories(convoy INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/dsp/include>
   $<INSTALL_INTERFACE:include>)
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/vendor/dsp/include/dsp/fft.hpp")
+  message(FATAL_ERROR "DSP dependency missing: run git submodule update --init --recursive")
+endif()
 target_compile_features(convoy INTERFACE cxx_std_17)
 option(CONVOY_DISABLE_AVX "Disable runtime AVX acceleration in the custom backend" OFF)
 if(CONVOY_DISABLE_AVX)
@@ -54,6 +58,10 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 install(TARGETS convoy EXPORT ConvoyTargets)
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY vendor/dsp/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  FILES_MATCHING PATTERN "*.hpp")
+install(FILES vendor/dsp/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/Convoy
+  RENAME DSP-LICENSE)
 install(EXPORT ConvoyTargets NAMESPACE convoy:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Convoy)
 configure_package_config_file(cmake/ConvoyConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/ConvoyConfig.cmake
